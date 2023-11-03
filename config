@@ -1,6 +1,3 @@
-exec --no-startup-id xrandr --output HDMI1 --mode 1440x900 -r 70 
-exec --no-startup-id xrandr --output VGA1 --off
-
 set $mod Mod4
 
 # class                 border  backgr. text    indicator child_border
@@ -13,7 +10,7 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 font pango:FiraCode 7
 
 exec --no-startup-id dex --autostart --environment i3
-exec alacritty -e vim ~/33/$(date +%d).md
+# exec alacritty -e vim ~/33/$(date +%d).md
 
 # exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet

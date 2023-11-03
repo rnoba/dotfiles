@@ -1,0 +1,3 @@
+#!/bin/sh
+
+make re 1> /dev/null && cc -o main ./main.c ./libftprintf.a && ./main | cat -e

@@ -15,8 +15,6 @@ export EDITOR="nvim"
 export ARCHFLAGS="-arch x86-64"
 # END
 
-plugins=(git)
-
 ZSH="$HOME/.config/oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -40,7 +38,6 @@ alias ls="exa --icons --group-directories-first"
 alias vim="nvim"
 alias ll="exa --tree --icons --git-ignore --git --list-dirs"
 alias cat="bat --style=plain --theme='gruvbox-dark'"
-alias notes="glow ~/33"
 # END
 #
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
