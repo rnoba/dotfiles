@@ -1,3 +1,0 @@
-#!/bin/sh
-
-make re && make bonus && cc -o main ./main.c ./libft.a && ./main
