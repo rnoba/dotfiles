@@ -10,8 +10,8 @@ function CreateTags()
   exec ':!ctags -R --exclude=log -f ./tags *'
 endfunction
 
-nnoremap <Leader>n :cnext<CR>
-nnoremap <Leader>p :cprev<CR>
-nnoremap <Leader>s :copen<CR>
-nnoremap <Leader>cc :cclose<CR>
+nnoremap <silent> <Leader>n :cnext<CR>
+nnoremap <silent> <Leader>p :cprev<CR>
+nnoremap <silent> <Leader>s :copen<CR>
+nnoremap <silent> <Leader>cc :cclose<CR>
 nnoremap <silent> <Leader>tt :call CreateTags()<CR>
