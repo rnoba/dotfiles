@@ -161,13 +161,13 @@ for_window [class="Zathura"] floating enable
 
 bar {
     status_command i3blocks
-    colors {
-        background #000000
-        statusline #00A5FF
-        separator #666666
-        focused_workspace  #000000 #000000 #c678dd
-        active_workspace   #000000 #000000 #ffffff
-        inactive_workspace #000000 #000000 #888888
-        urgent_workspace   #000000 #000000 #ffffff
-    }
+	colors {
+		background #000000
+		statusline #00A5FF
+		separator #666666
+		focused_workspace  #000000 #000000 #c678dd
+		active_workspace   #000000 #000000 #ffffff
+		inactive_workspace #000000 #000000 #888888
+		urgent_workspace   #000000 #000000 #ffffff
+	}
 }

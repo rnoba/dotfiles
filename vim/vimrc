@@ -1,0 +1,33 @@
+syntax on
+let g:mapleader=","
+set tabstop=4
+set shiftwidth=2
+set softtabstop=4
+
+set runtimepath=/home/rnoba/.config/vim,/usr/share/vim/vimfiles,/usr/share/vim/vim91,/usr/share/vim/vimfiles/after,/home/rnoba/.config/vim/after
+set viminfo+='1000,n~/.config/vim/viminfo
+autocmd FileType qf wincmd H
+
+set nu
+set autoindent 
+set noswapfile
+
+set relativenumber
+set mouse=a
+
+set undodir=$HOME/.config/vim/undo
+set undofile
+
+set undolevels=10000
+set undoreload=10000000
+set incsearch
+set scrolloff=8
+set clipboard=unnamed
+
+filetype plugin on
+filetype indent on
+"MAPr
+vnoremap <Leader>Y "+y
+set laststatus=2 
+set statusline=%y\ %F\ \%M\ %R\ \%q\ %=Line:\ %l\ Column:\ %v\ (Char:\ (%B'%b')\ Byte\ Offset:\ %o)
+hi StatusLine term=reverse,bold cterm=bold,bold gui=bold,reverse
