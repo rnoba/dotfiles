@@ -1,9 +1,9 @@
 syntax on
 let g:mapleader=","
 set termguicolors
-set tabstop=4
+set tabstop=2
 set shiftwidth=2
-set softtabstop=4
+"set softtabstop=4
 
 hi VertSplit term=reverse ctermfg=16 ctermbg=44 guifg=#1c1f24 guibg=#1c1f24
 hi Search term=reverse ctermbg=11 guibg=#18181B
@@ -14,7 +14,11 @@ hi Visual term=reverse ctermbg=7 guibg=#252528
 hi CursorLineSign term=reverse ctermbg=7 guibg=#252528
 hi CursorLineFold term=reverse ctermbg=7 guibg=#252528
 hi CursorLine term=reverse cterm=bold ctermbg=7 guibg=#252528
-set runtimepath=/home/rnoba/.config/vim,/usr/share/vim/vimfiles,/usr/share/vim/vim91,/usr/share/vim/vimfiles/after,/home/rnoba/.config/vim/after
+hi LineNr term=bold ctermfg=50 guifg=#4F4F4F
+
+hi Type term=underline ctermfg=2 gui=bold guifg=#c678dd
+"hi Statement term=bold ctermfg=130 gui=bold guifg=#333333
+set runtimepath=/home/rnoba/.config/vim,/usr/share/vim/vimfiles,/usr/share/vim/vim91,/usr/share/vim/vimfiles/after,/home/rnoba/.config/vim/after,/usr/bin/fzf
 set viminfo+='1000,n~/.config/vim/viminfo
 autocmd FileType qf wincmd H
 set fillchars=vert:\|,fold:-,eob:\ ,lastline:\@
@@ -42,3 +46,11 @@ vnoremap <silent> <Leader>Y "+y
 set laststatus=2 
 set statusline=%y\ %F\ \%M\ %R\ \%q\ %=Line:\ %l\ Column:\ %v\ (Char:\ (%B'%b')\ Byte\ Offset:\ %o)
 hi StatusLine term=reverse,bold cterm=bold,bold gui=bold,reverse
+
+let g:fzf_action = {
+			\ 'ctrl-t': 'tab split',
+			\ 'ctrl-x': 'split',
+			\ 'ctrl-v': 'vsplit'}
+
+let g:fzf_layout = { 'down': '40%' }
+let g:fzf_history_dir = '~/.local/share/fzf-history'
