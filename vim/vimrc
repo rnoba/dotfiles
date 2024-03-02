@@ -1,26 +1,16 @@
+colorscheme gruvbox
+let g:gruvbox_contrast_dark = 'hard'
+let g:gruvbox_transparent_bg = 1
+set background=dark
 syntax on
 let g:mapleader=","
 set termguicolors
 set tabstop=2
 set shiftwidth=2
-"set softtabstop=4
 
-hi VertSplit term=reverse ctermfg=16 ctermbg=44 guifg=#1c1f24 guibg=#1c1f24
-hi Search term=reverse ctermbg=11 guibg=#18181B
-hi StatusLineNC term=reverse cterm=reverse gui=bold
-hi StatusLineNC term=bold cterm=bold gui=bold
-hi CurSearch term=reverse ctermbg=11 guibg=#18181B
-hi Visual term=reverse ctermbg=7 guibg=#252528
-hi CursorLineSign term=reverse ctermbg=7 guibg=#252528
-hi CursorLineFold term=reverse ctermbg=7 guibg=#252528
-hi CursorLine term=reverse cterm=bold ctermbg=7 guibg=#252528
-hi LineNr term=bold ctermfg=50 guifg=#4F4F4F
-
-hi Type term=underline ctermfg=2 gui=bold guifg=#c678dd
-"hi Statement term=bold ctermfg=130 gui=bold guifg=#333333
 set runtimepath=/home/rnoba/.config/vim,/usr/share/vim/vimfiles,/usr/share/vim/vim91,/usr/share/vim/vimfiles/after,/home/rnoba/.config/vim/after,/usr/bin/fzf
 set viminfo+='1000,n~/.config/vim/viminfo
-autocmd FileType qf wincmd H
+"autocmd FileType qf wincmd H
 set fillchars=vert:\|,fold:-,eob:\ ,lastline:\@
 
 set nu
@@ -41,11 +31,17 @@ set clipboard=unnamed
 
 filetype plugin on
 filetype indent on
-"MAPr
+
 vnoremap <silent> <Leader>Y "+y
+nnoremap <silent> <Leader>n :cnext<CR>
+nnoremap <silent> <Leader>sf :FZF<CR>
+nnoremap <silent> <Leader>p :cprev<CR>
+nnoremap <silent> <Leader>s :copen<CR>
+nnoremap <silent> <Leader>cc :cclose<CR>
+
 set laststatus=2 
 set statusline=%y\ %F\ \%M\ %R\ \%q\ %=Line:\ %l\ Column:\ %v\ (Char:\ (%B'%b')\ Byte\ Offset:\ %o)
-hi StatusLine term=reverse,bold cterm=bold,bold gui=bold,reverse
+
 
 let g:fzf_action = {
 			\ 'ctrl-t': 'tab split',
@@ -54,3 +50,16 @@ let g:fzf_action = {
 
 let g:fzf_layout = { 'down': '40%' }
 let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+"hi StatusLineNC term=reverse cterm=reverse gui=bold
+"hi StatusLineNC term=bold cterm=bold gui=bold
+"hi VertSplit term=reverse ctermfg=16 ctermbg=44 guifg=#1c1f24 guibg=#1c1f24
+"hi Search term=reverse ctermbg=11 guibg=#18181B
+"hi CurSearch term=reverse ctermbg=11 guibg=#18181B
+"hi Visual term=reverse ctermbg=7 guibg=#252528
+"hi CursorLineSign term=reverse ctermbg=7 guibg=#252528
+"hi CursorLineFold term=reverse ctermbg=7 guibg=#252528
+"hi CursorLine term=reverse cterm=bold ctermbg=7 guibg=#252528
+"hi LineNr term=bold ctermfg=50 guifg=#4F4F4F
+"hi Type term=underline ctermfg=2 gui=bold guifg=#c678dd
+hi StatusLine guifg=#1c1f24 term=reverse,reverse cterm=reverse,bold gui=bold,bold
