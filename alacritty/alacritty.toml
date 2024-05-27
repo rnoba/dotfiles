@@ -35,7 +35,7 @@ cyan = '#46d9ff'
 white = '#dfdfdf'
 
 [[hints.enabled]]
-command = "xdg-open" # On Linux/BSD
+command = "xdg-open"
 hyperlinks = true
 post_processing = true
 persist = false

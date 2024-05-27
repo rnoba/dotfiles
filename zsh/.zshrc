@@ -29,7 +29,7 @@ add-zsh-hook -Uz precmd reset_broken_terminal
 
 # ALIASES
 alias zshedit="$EDITOR $ZDOTDIR/.zshrc"
-alias ls=exa
+#alias ls=exa
 # ALIASES
 
 #BINDS
@@ -40,4 +40,9 @@ bindkey "^R" history-incremental-pattern-search-backward
 # PLUGINS
 source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+# NVM
+source /usr/share/nvm/init-nvm.sh
+# DIRENV
+eval "$(direnv hook zsh)"
 # PLUGINS
