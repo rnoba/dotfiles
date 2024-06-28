@@ -1,10 +1,17 @@
 # GENERATED 
+<<<<<<< HEAD
 HISTFILE=~/.config/zsh/histfile
+=======
+>>>>>>> 7d1c346 (yeah)
 HISTSIZE=1000
 SAVEHIST=1000
 setopt extendedglob nomatch notify
 unsetopt autocd
+<<<<<<< HEAD
 zstyle :compinstall filename "$HOME/.config/zshrc"
+=======
+zstyle :compinstall filename "$HOME/.zshrc"
+>>>>>>> 7d1c346 (yeah)
 autoload -Uz compinit
 compinit
 # GENERATED 
