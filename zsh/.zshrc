@@ -1,17 +1,10 @@
 # GENERATED 
-<<<<<<< HEAD
-HISTFILE=~/.config/zsh/histfile
-=======
->>>>>>> 7d1c346 (yeah)
 HISTSIZE=1000
 SAVEHIST=1000
+HISTFILE="$HOME/.config/zsh/history"
 setopt extendedglob nomatch notify
 unsetopt autocd
-<<<<<<< HEAD
-zstyle :compinstall filename "$HOME/.config/zshrc"
-=======
 zstyle :compinstall filename "$HOME/.zshrc"
->>>>>>> 7d1c346 (yeah)
 autoload -Uz compinit
 compinit
 # GENERATED 
@@ -27,15 +20,12 @@ export VIMINIT="source $VIMRC"
 
 # ZSH
 PROMPT="[%F{magenta}%n%f %F{green}%~%f] "
-autoload -Uz add-zsh-hook
-function reset_broken_terminal () {
-  printf '%b' '\e[0m\e(B\e)0\017\e[?5l\e7\e[0;0r\e8'
-}
-add-zsh-hook -Uz precmd reset_broken_terminal
 # ZSH
 
+ZDOTDIR=$HOME/.config/zsh
+
 # ALIASES
-alias zshedit="$EDITOR $ZDOTDIR/.zshrc"
+alias zshedit="$EDITOR $HOME/.zshrc"
 #alias ls=exa
 # ALIASES
 
@@ -47,9 +37,4 @@ bindkey "^R" history-incremental-pattern-search-backward
 # PLUGINS
 source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
-
-# NVM
-source /usr/share/nvm/init-nvm.sh
-# DIRENV
-eval "$(direnv hook zsh)"
 # PLUGINS
