@@ -18,19 +18,11 @@ set noswapfile
 set relativenumber
 set mouse=a
 
-<<<<<<< HEAD
-set undodir=$HOME/.config/vim/undo
-set undofile
-
-set undolevels=10000
-set undoreload=10000000
-=======
 set undolevels=10000
 set undoreload=10000000
 set undodir=$HOME/.config/vim/undo
 set undofile
 
->>>>>>> 7d1c346 (yeah)
 set incsearch
 set scrolloff=8
 set clipboard=unnamed
@@ -47,10 +39,6 @@ nnoremap <silent> <Leader>cc :cclose<CR>
 
 set laststatus=2 
 set statusline=%y\ %F\ \%M\ %R\ \%q\ %=Line:\ %l\ Column:\ %v\ (Char:\ (%B'%b')\ Byte\ Offset:\ %o)
-<<<<<<< HEAD
-set statusline+=%{gutentags#statusline()}
-=======
->>>>>>> 7d1c346 (yeah)
 
 let g:fzf_action = {
 			\ 'ctrl-t': 'tab split',
