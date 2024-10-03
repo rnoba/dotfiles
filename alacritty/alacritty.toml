@@ -8,7 +8,7 @@ padding = { x = 7, y = 7 }
 normal = { family = "LiberationMono", style = "Regular" }
 bold = { family = "LiberationMono", style = "Bold" }
 bold_italic = { family = "LiberationMono", style = "BoldItalic" }
-size = 7
+size = 11
 
 [colors]
 primary = { foreground = "#DEB887", background = "#161616" }

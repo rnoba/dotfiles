@@ -1,40 +1,85 @@
-# GENERATED 
-HISTSIZE=1000
-SAVEHIST=1000
-HISTFILE="$HOME/.config/zsh/history"
+# Lines configured by zsh-newuser-install
+export HISTFILE=~/.histfile
+export HISTSIZE=100000
+export SAVEHIST=100000
+setopt HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_VERIFY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_DUPS
+setopt SHARE_HISTORY
+setopt INC_APPEND_HISTORY
 setopt extendedglob nomatch notify
-unsetopt autocd
-zstyle :compinstall filename "$HOME/.zshrc"
+setopt EXTENDED_HISTORY
+setopt BANG_HIST
+bindkey -v
+zstyle :compinstall filename '/home/rnoba/.zshrc'
 autoload -Uz compinit
 compinit
-# GENERATED 
+# End of lines added by compinstall
 
-# ENV
-export ARCHFLAGS="-arch x86-64"
-export PATH="$HOME/.local/bin:$PATH"
-export EDITOR=vim
-export VIMRC="$HOME/.config/vim/vimrc"
-export VIMINIT="source $VIMRC"
-# ENV
+export EDITOR=nvim
+export ARCH=x86_64
+export ARCHFLAGS="-arch $ARCH"
 
+alias config_zsh="$EDITOR $HOME/.zshrc"
+alias config_sway="$EDITOR $HOME/.config/sway/config"
+alias config_alacritty="$EDITOR $HOME/.config/alacritty/alacritty.toml"
+alias nix-shell='nix-shell --run zsh'
 
-# ZSH
-PROMPT="[%F{magenta}%n%f %F{green}%~%f] "
-# ZSH
+setopt PROMPT_SUBST
+INITIAL_PROMPT="%F{magenta}%n%f %F{magenta}in %F{purple}%~%f"
+TMUX_LOADED=false
+NIX_LOADED=false
+function update_prompt()
+{
+	if [[ -v TMUX ]]; then
+		if ! $TMUX_LOADED; then
+			TMUX_LOADED=true
+			A="%F{cyan}[T]"
+		fi
+	else
+		TMUX_LOADED=false
+		A=""
+	fi
 
-ZDOTDIR=$HOME/.config/zsh
+	if [[ -v IN_NIX_SHELL ]]; then
+		if ! $NIX_LOADED; then
+			NIX_LOADED=true
+			B="%F{magenta}[N]"
+		fi
+	else
+		B=""
+		NIX_LOADED=false
+	fi
 
-# ALIASES
-alias zshedit="$EDITOR $HOME/.zshrc"
-#alias ls=exa
-# ALIASES
+	if [ -d "$PWD/.git" ]; then
+		git status 1>/dev/null 2>/dev/null || return;
+		D=""
+		[[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && D="*"
+		S="$(git status --porcelain 2>/dev/null| grep "^??" | wc -l)"
+		C="%F{red}[$(git branch | cut -d ' ' -f 2)$D $S]"
+	else
+		C=""
+	fi
 
-#BINDS
-#bindkey '^R' history-incremental-search-backward
+	PROMPT="[$A$B$C${INITIAL_PROMPT}] "
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd update_prompt 
+
 bindkey "^R" history-incremental-pattern-search-backward
-#BINDS
+bindkey "^L" forward-word
+bindkey "^H" backward-word
 
-# PLUGINS
-source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
-# PLUGINS
+if [[ -v TMUX ]]; then
+	bindkey "^[[1~" beginning-of-line
+else
+	bindkey "^[[H" beginning-of-line
+fi
+
+zstyle ':completion:*' hosts off
+source "$HOME/.config/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+eval "$(direnv hook zsh)"
