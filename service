@@ -1,0 +1,12 @@
+dbus
+dhcpcd
+earlyoom
+elogind
+ip6tables
+iptables
+nix-daemon
+polkitd
+preload
+sshd
+udevd
+wpa_supplicant
