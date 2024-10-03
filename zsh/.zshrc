@@ -32,6 +32,20 @@ setopt PROMPT_SUBST
 INITIAL_PROMPT="%F{magenta}%n%f %F{magenta}in %F{purple}%~%f"
 TMUX_LOADED=false
 NIX_LOADED=false
+
+function git_plugin()
+{
+	if [ -d "$PWD/.git" ]; then
+		git status 1>/dev/null 2>/dev/null || return;
+		D=""
+		[[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && D="*"
+		S="$(git status --porcelain 2>/dev/null| grep "^??" | wc -l)"
+		C="%F{red}[$(git branch | cut -d ' ' -f 2)$D $S]"
+	else
+		C=""
+	fi
+}
+
 function update_prompt()
 {
 	if [[ -v TMUX ]]; then
@@ -54,17 +68,12 @@ function update_prompt()
 		NIX_LOADED=false
 	fi
 
-	if [ -d "$PWD/.git" ]; then
-		git status 1>/dev/null 2>/dev/null || return;
-		D=""
-		[[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && D="*"
-		S="$(git status --porcelain 2>/dev/null| grep "^??" | wc -l)"
-		C="%F{red}[$(git branch | cut -d ' ' -f 2)$D $S]"
-	else
-		C=""
-	fi
-
 	PROMPT="[$A$B$C${INITIAL_PROMPT}] "
+}
+
+function chpwd() {
+    emulate -L zsh
+		git_plugin
 }
 
 autoload -Uz add-zsh-hook
