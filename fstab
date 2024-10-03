@@ -1,0 +1,8 @@
+
+# maybe separate home partition?
+# crypto
+ROOT / ext4 data=writeback,rw,noatime,commit=60	0 0
+EFI /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro 0 0
+SWAP swap rw,noatime,discard	0 0
+
+tmpfs /tmp tmpfs noatime,nosuid,nodev 	0 0
