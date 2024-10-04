@@ -6,7 +6,7 @@ GRUB_DEFAULT=0
 #GRUB_HIDDEN_TIMEOUT_QUIET=false
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="Void"
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=0 mitigations=off nowatchdog intel_idle.max_cstate=1 intel_iommu=igfx_off cryptomgr.notests no_timer_check noreplace-smp page_alloc.shuffle=1 tsc=reliable"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=0 mitigations=off nowatchdog cryptomgr.notests no_timer_check noreplace-smp page_alloc.shuffle=1 tsc=reliable"
 #GRUB_CMDLINE_LINUX_DEFAULT="loglevel=0"
 # Uncomment to use basic console
 #GRUB_TERMINAL_INPUT="console"
