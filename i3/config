@@ -1,12 +1,15 @@
 set $mod Mod4
 
-font pango:LiberationMono 9
+font pango:LiberationMono 8
 
-# https://wiki.archlinux.org/index.php/XDG_Autostart
-exec --no-startup-id dex --autostart --environment i3
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec nm-applet 
+exec xrandr --output VGA-1 --off
+exec xrandr --output HDMI-1 --mode 1440x900 --refresh 75
+exec pipewire
 
-exec --no-startup-id nm-applet
+exec feh --bg-fill ~/Pictures/wallpaper.jpg
+
+default_border pixel 3
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -17,49 +20,26 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
-
 tiling_drag modifier titlebar
 
-# start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
-
-# kill focused window
+bindsym $mod+p exec spot 
+bindsym $mod+o exec flameshot launcher 
+bindsym $mod+Return exec st 
+bindsym $mod+d exec --no-startup-id dmenu_run
 bindsym $mod+Shift+q kill
 
-# start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id dmenu_run
-
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
+bindsym $mod+j focus down 
+bindsym $mod+k focus up 
+bindsym $mod+l focus right 
+bindsym $mod+h focus left 
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
-# move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
-
-# split in horizontal orientation
-bindsym $mod+h split h
-
-# split in vertical orientation
-bindsym $mod+v split v
-
-# enter fullscreen mode for the focused container
+bindsym $mod+v split toggle 
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
@@ -111,34 +91,53 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# reload the configuration file
 bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End session?' -B 'Yes' 'i3-msg exit'"
 
 mode "resize" {
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
-
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+r mode "default"
+		bindsym j resize grow height 10 px or 10 ppt
+		bindsym k resize shrink height 10 px or 10 ppt
+		bindsym h resize shrink width 10 px or 10 ppt
+		bindsym l resize grow width 10 px or 10 ppt
+		bindsym Return mode "default"
+		bindsym Escape mode "default"
+		bindsym $mod+r mode "default"
 }
 
 bindsym $mod+r mode "resize"
 
+for_window [class="dolphin"] floating enable,  resize set 800 600 
 for_window [class="pomatez"] floating enable
-for_window [class="Zathura"] floating enable
+for_window [class="pavucontrol"] floating enable
+
+set $bg-color						 #161616
+set $inactive-bg-color   #1c1f24
+set $text-color          #da8548
+set $inactive-text-color #7d7d7d
+set $urgent-bg-color     #ff6f91
+
+client.focused          $bg-color           $bg-color						$text-color						$bg-color
+client.unfocused        $inactive-bg-color	$inactive-bg-color	$inactive-text-color	$inactive-bg-color
+client.focused_inactive $inactive-bg-color	$inactive-bg-color	$inactive-text-color	$inactive-bg-color
+client.urgent						$urgent-bg-color		$urgent-bg-color		$text-color						$urgent-bg-color
+
+set $bg-bar-color						 #161617 
+set $inactive-bg-bar-color   #1c1f24
+set $text-bar-color          #c678dd
+set $inactive-text-bar-color #7d7d7d
+set $urgent-bg-bar-color     #ff6f91
 
 bar {
-  status_command i3blocks 
+	status_command i3blocks
+	position top
+	tray_padding 3
+	padding 2 0
+	colors {
+		background	$bg-bar-color
+		separator		$bg-bar-color
+		focused_workspace  $bg-bar-color          $bg-bar-color          $text-bar-color
+		inactive_workspace $inactive-bg-bar-color $inactive-bg-bar-color $inactive-text-bar-color
+		urgent_workspace   $urgent-bg-bar-color   $urgent-bg-bar-color   $text-colo
+	}
 }
