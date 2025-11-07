@@ -1,44 +1,32 @@
-live_config_reload = true
-
 [window]
-decorations = "none"
-padding = { x = 7, y = 7 }
+padding.x = 5 
+padding.y = 5 
 
-[font]
-normal = { family = "LiberationMono", style = "Regular" }
-bold = { family = "LiberationMono", style = "Bold" }
-bold_italic = { family = "LiberationMono", style = "BoldItalic" }
-size = 11
+[colors.primary]
+background = '#0a0008'
+foreground = '#fff5fb'
 
-[colors]
-primary = { foreground = "#DEB887", background = "#161616" }
-cursor = { cursor = "#ED5AB3" }
-vi_mode_cursor = { cursor = "#ED5AB3" }
-draw_bold_text_with_bright_colors = true
+[colors.cursor]
+text = '#0a0008'
+cursor = '#ff8bd4'
+
 [colors.normal]
-black = '#1c1f24'
-red = '#ff6c6b'
-green = '#98be65'
-yellow = '#da8548'
-blue = '#51afef'
-magenta = '#c678dd'
-cyan = '#5699af'
-white = '#202328'
-[colors.bright]
-black = '#5b6268'
-red = '#da8548'
-green = '#4db5bd'
-yellow = '#ecbe7b'
-blue = '#3071db'
-magenta = '#a9a1e1'
-cyan = '#46d9ff'
-white = '#dfdfdf'
+black   = '#4b4750'
+red     = '#ff6fa6'
+green   = '#28d27a'
+yellow  = '#ffd166'
+blue    = '#7fb3ff'
+magenta = '#ff7bd9'
+cyan    = '#43e1df'
+white   = '#ffffff'
 
-[[hints.enabled]]
-command = "xdg-open"
-hyperlinks = true
-post_processing = true
-persist = false
-mouse.enabled = true
-binding = { key = "U", mods = "Control|Shift" }
-regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
+[colors.bright]
+black   = '#6e6a73'
+red     = '#ff96c9'
+green   = '#6af2a1'
+yellow  = '#ffe495'
+blue    = '#b6dcff'
+magenta = '#ff9fe1'
+cyan    = '#8ff0ef'
+white   = '#ffffff'
+
