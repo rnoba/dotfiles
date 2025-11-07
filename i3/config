@@ -3,29 +3,29 @@ set $mod Mod4
 font pango:LiberationMono 8
 
 exec nm-applet 
-exec xrandr --output VGA-1 --off
-exec xrandr --output HDMI-1 --mode 1440x900 --refresh 75
 exec pipewire
+exec picom
+exec set_wallpaper ~/Pictures/wallpapers/Video
+# exec flameshot
+# exec feh --bg-fill -z ~/Pictures/wallpapers
+# exec --no-startup-id dunst
 
-exec feh --bg-fill ~/Pictures/wallpaper.jpg
+bindsym Ctrl+Shift+space exec --no-startup-id "/home/rnoba/.local/bin/toggle-kb"
 
-default_border pixel 3
-
-# Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+bindsym XF86AudioMute				 exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute		 exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 tiling_drag modifier titlebar
 
-bindsym $mod+p exec spot 
-bindsym $mod+o exec flameshot launcher 
-bindsym $mod+Return exec st 
-bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+Return exec alacritty 
+bindsym $mod+o		  exec flameshot launcher 
+bindsym $mod+d			exec --no-startup-id dmenu_run
+
 bindsym $mod+Shift+q kill
 
 # change focus
@@ -96,37 +96,43 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End session?' -B 'Yes' 'i3-msg exit'"
 
 mode "resize" {
-		bindsym j resize grow height 10 px or 10 ppt
-		bindsym k resize shrink height 10 px or 10 ppt
-		bindsym h resize shrink width 10 px or 10 ppt
-		bindsym l resize grow width 10 px or 10 ppt
-		bindsym Return mode "default"
-		bindsym Escape mode "default"
-		bindsym $mod+r mode "default"
+	bindsym j resize grow height 10 px or 10 ppt
+	bindsym k resize shrink height 10 px or 10 ppt
+	bindsym h resize shrink width 10 px or 10 ppt
+	bindsym l resize grow width 10 px or 10 ppt
+
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+	bindsym $mod+r mode "default"
 }
 
 bindsym $mod+r mode "resize"
 
-for_window [class="dolphin"] floating enable,  resize set 800 600 
-for_window [class="pomatez"] floating enable
+for_window [class="dolphin"]		 floating enable, resize set 800 600 
+for_window [class="Thunar"]			 floating enable, resize set 800 600 
+for_window [class="pomatez"]		 floating enable
 for_window [class="pavucontrol"] floating enable
 
-set $bg-color						 #161616
-set $inactive-bg-color   #1c1f24
-set $text-color          #da8548
-set $inactive-text-color #7d7d7d
-set $urgent-bg-color     #ff6f91
+default_border pixel 1
 
-client.focused          $bg-color           $bg-color						$text-color						$bg-color
-client.unfocused        $inactive-bg-color	$inactive-bg-color	$inactive-text-color	$inactive-bg-color
-client.focused_inactive $inactive-bg-color	$inactive-bg-color	$inactive-text-color	$inactive-bg-color
-client.urgent						$urgent-bg-color		$urgent-bg-color		$text-color						$urgent-bg-color
+set $inactive-text-color		 #8a8a8a
+set $inactive-bg-color			 #141416
+set $urgent-bg-color				 #ff5c8a
+set $text-color							 #ff79c6
+set $bg-color								 #0f0f10
 
-set $bg-bar-color						 #161617 
-set $inactive-bg-bar-color   #1c1f24
-set $text-bar-color          #c678dd
-set $inactive-text-bar-color #7d7d7d
-set $urgent-bg-bar-color     #ff6f91
+set $inactive-text-bar-color #8a8a8a
+set $inactive-bg-bar-color	 #141416
+set $urgent-bg-bar-color		 #ff5c8a
+set $text-bar-color					 #ff66b2
+set $bg-bar-color						 #0f0f10
+
+gaps outer 1
+
+client.focused          $bg-color           $bg-color            $text-color            $bg-color
+client.unfocused        $inactive-bg-color  $inactive-bg-color   $inactive-text-color   $inactive-bg-color
+client.focused_inactive $inactive-bg-color  $inactive-bg-color   $inactive-text-color   $inactive-bg-color
+client.urgent           $urgent-bg-color    $urgent-bg-color     $text-color            $urgent-bg-color
 
 bar {
 	status_command i3blocks
@@ -134,10 +140,10 @@ bar {
 	tray_padding 3
 	padding 2 0
 	colors {
-		background	$bg-bar-color
-		separator		$bg-bar-color
-		focused_workspace  $bg-bar-color          $bg-bar-color          $text-bar-color
-		inactive_workspace $inactive-bg-bar-color $inactive-bg-bar-color $inactive-text-bar-color
-		urgent_workspace   $urgent-bg-bar-color   $urgent-bg-bar-color   $text-colo
+		background           $bg-bar-color
+		separator            $bg-bar-color
+		focused_workspace    $bg-bar-color          $bg-bar-color          $text-bar-color
+		urgent_workspace     $urgent-bg-bar-color   $urgent-bg-bar-color   $text-bar-color
+		inactive_workspace   $inactive-bg-bar-color $inactive-bg-bar-color $inactive-text-bar-color
 	}
 }

@@ -12,10 +12,6 @@ interval=1
 color=#dfdfdf
 align=left
 
-[separator]
-full_text=<span foreground="#c678dd" size="x-large">|</span>
-markup=pango
-
 [MEM]
 command=free -h | awk '/Mem:/ { printf(" %5s/%s \n", $3, $2) }'
 interval=10
@@ -23,19 +19,17 @@ color=#dfdfdf
 separator=false
 align=left
 
-[separator]
-full_text=<span foreground="#c678dd" size="x-large">|</span>
-markup=pango
-
 [DISK]
-command=df -h / | awk '/\//{ printf(" %4s/%s \n", $4, $2) }'
+command=df -h /home | awk '/\//{ printf("Home: %4s/%s \n", $4, $2) }'
 interval=20
 color=#dfdfdf
 separator=false
 
-[separator]
-full_text=<span foreground="#c678dd" size="x-large">|</span>
-markup=pango
+[DISK]
+command=df -h / | awk '/\//{ printf("Root: %4s/%s \n", $4, $2) }'
+interval=20
+color=#dfdfdf
+separator=false
 
 [TIME_DATE]
 command=date +" %a, %d %b - %H:%M:%S"
@@ -43,12 +37,8 @@ interval=5
 color=#dfdfdf
 separator=false
 
-[separator]
-full_text=<span foreground="#c678dd" size="x-large">|</span>
-markup=pango
-
 [KBD]
-command=[ $(xset -q | grep -A 0 'LED' | cut -c59-67) -eq "00000000" ] && echo "us" || echo "br"
+command=setxkbmap -query | grep layout | awk '{print $2}'
 interval=1
 color=#dfdfdf
 separator=false
