@@ -84,6 +84,7 @@ main() {
 	safe_copy "./.zshenv" "$HOME/.zshenv"
 	safe_copy "./zsh" "$CONFIG_DIR/zsh"
 	safe_copy "./alacritty" "$CONFIG_DIR/alacritty"
+	safe_copy "./nvim" "$CONFIG_DIR/nvim"
 	safe_copy "./tmux" "$CONFIG_DIR/tmux"
 	safe_copy "./i3" "$CONFIG_DIR/i3"
 	safe_copy "./i3blocks" "$CONFIG_DIR/i3blocks"
