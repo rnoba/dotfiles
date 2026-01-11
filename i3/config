@@ -3,9 +3,7 @@ set $mod Mod4
 font pango:LiberationMono 8
 
 exec nm-applet 
-exec pipewire
-exec picom
-exec set_wallpaper ~/Pictures/wallpapers/Video
+# exec set_wallpaper ~/Pictures/wallpapers/Video
 # exec flameshot
 # exec feh --bg-fill -z ~/Pictures/wallpapers
 # exec --no-startup-id dunst

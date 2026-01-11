@@ -1,51 +1,41 @@
 # Lines configured by zsh-newuser-install
-export HISTFILE=~/.histfile
 export HISTSIZE=100000
 export SAVEHIST=100000
+
+setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_REDUCE_BLANKS
 setopt HIST_SAVE_NO_DUPS
-setopt HIST_VERIFY
-setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_IGNORE_DUPS
 setopt SHARE_HISTORY
 setopt INC_APPEND_HISTORY
-setopt extendedglob nomatch notify
+setopt HIST_IGNORE_ALL_DUPS 
+setopt INC_APPEND_HISTORY_TIME
 setopt EXTENDED_HISTORY
-setopt BANG_HIST
 bindkey -v
-zstyle :compinstall filename '/home/rnoba/.zshrc'
+zstyle ':completion:*' hosts off
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select
+zstyle :compinstall filename "$ZDOTDIR/.zshrc"
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+# export SSLKEYLOGFILE="$HOME/ssl-key.log"
 export EDITOR=nvim
 export ARCH=x86_64
 export ARCHFLAGS="-arch $ARCH"
+export XCURSOR_PATH="${XCURSOR_PATH}:$HOME/.local/share/icons"
 
-alias config_zsh="$EDITOR $HOME/.zshrc"
-alias config_sway="$EDITOR $HOME/.config/sway/config"
-alias config_alacritty="$EDITOR $HOME/.config/alacritty/alacritty.toml"
 alias nix-shell='nix-shell --run zsh'
+alias nix-develop='nix develop -c zsh'
+alias ls='exa --icons --group-directories-first'
 
-setopt PROMPT_SUBST
+setopt prompt_subst
 INITIAL_PROMPT="%F{magenta}%n%f %F{magenta}in %F{purple}%~%f"
 TMUX_LOADED=false
 NIX_LOADED=false
-
-function git_plugin()
-{
-	if [ -d "$PWD/.git" ]; then
-		git status 1>/dev/null 2>/dev/null || return;
-		D=""
-		[[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]] && D="*"
-		S="$(git status --porcelain 2>/dev/null| grep "^??" | wc -l)"
-		C="%F{red}[$(git branch | cut -d ' ' -f 2)$D $S]"
-	else
-		C=""
-	fi
-}
-
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=magenta,bold,underline"
 function update_prompt()
 {
 	if [[ -v TMUX ]]; then
@@ -68,12 +58,7 @@ function update_prompt()
 		NIX_LOADED=false
 	fi
 
-	PROMPT="[$A$B$C${INITIAL_PROMPT}] "
-}
-
-function chpwd() {
-    emulate -L zsh
-		git_plugin
+	PROMPT="[$A$B$C${INITIAL_PROMPT}${vcs_info_msg_0_}] "
 }
 
 autoload -Uz add-zsh-hook
@@ -83,12 +68,18 @@ bindkey "^R" history-incremental-pattern-search-backward
 bindkey "^L" forward-word
 bindkey "^H" backward-word
 
+function do-walk() { walk; zle redisplay; }
+zle -N do-walk 
+bindkey '^f' do-walk
+
 if [[ -v TMUX ]]; then
-	bindkey "^[[1~" beginning-of-line
+	bindkey "^B" beginning-of-line
+	bindkey "^E" end-of-line
 else
 	bindkey "^[[H" beginning-of-line
 fi
 
-zstyle ':completion:*' hosts off
-source "$HOME/.config/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+# source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh"
+# source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"
+
 eval "$(direnv hook zsh)"

@@ -1,0 +1,136 @@
+{
+    "app_config": {
+        "audio_config": {
+            "audio": "pipewire"
+        }
+    },
+    "archinstall-language": "English",
+    "auth_config": {},
+    "bootloader_config": {
+        "bootloader": "Grub",
+        "removable": true,
+        "uki": false
+    },
+    "custom_commands": [],
+    "disk_config": {
+        "btrfs_options": {
+            "snapshot_config": null
+        },
+        "config_type": "default_layout",
+        "device_modifications": [
+            {
+                "device": "/dev/nvme0n1",
+                "partitions": [
+                    {
+                        "btrfs": [],
+                        "dev_path": null,
+                        "flags": [
+                            "boot",
+                            "esp"
+                        ],
+                        "fs_type": "fat32",
+                        "mount_options": [],
+                        "mountpoint": "/boot",
+                        "obj_id": "cd36b075-cac4-4976-93d8-982ac16b63b9",
+                        "size": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "GiB",
+                            "value": 1
+                        },
+                        "start": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "MiB",
+                            "value": 1
+                        },
+                        "status": "create",
+                        "type": "primary"
+                    },
+                    {
+                        "btrfs": [],
+                        "dev_path": null,
+                        "flags": [],
+                        "fs_type": "ext4",
+                        "mount_options": [],
+                        "mountpoint": "/",
+                        "obj_id": "f551ab4a-cb99-4ee9-94c3-82b645efe6ec",
+                        "size": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "B",
+                            "value": 999128301568
+                        },
+                        "start": {
+                            "sector_size": {
+                                "unit": "B",
+                                "value": 512
+                            },
+                            "unit": "B",
+                            "value": 1074790400
+                        },
+                        "status": "create",
+                        "type": "primary"
+                    }
+                ],
+                "wipe": true
+            }
+        ]
+    },
+    "hostname": "rnoba",
+    "kernels": [
+        "linux"
+    ],
+    "locale_config": {
+        "kb_layout": "us",
+        "sys_enc": "UTF-8",
+        "sys_lang": "en_US.UTF-8"
+    },
+    "ntp": true,
+    "packages": [
+        "7zip",
+        "alacritty",
+        "dmenu",
+        "firefox",
+        "i3",
+        "mpv",
+        "neovim",
+        "network-manager-applet",
+        "networkmanager",
+				"ripgrep",
+        "noto-fonts",
+				"clang",
+				"gcc",
+        "noto-fonts-cjk",
+        "noto-fonts-emoji",
+        "nvidia-open",
+        "nvidia-settings",
+        "nvidia-utils",
+        "ttf-noto-nerd",
+        "unzip",
+        "vulkan-headers",
+        "vulkan-icd-loader",
+        "vulkan-tools",
+        "xorg",
+	"tmux",
+        "xclip",
+        "git",
+	"direnv",
+        "flameshot"
+    ],
+    "parallel_downloads": 0,
+    "script": null,
+    "services": [],
+    "swap": {
+        "algorithm": "zstd",
+        "enabled": true
+    },
+    "timezone": "UTC",
+    "version": "3.0.15"
+}
