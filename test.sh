@@ -85,8 +85,8 @@ confirm_disk() {
 
 partition_disk() {
     log_info "Partitioning $TARGET_DISK..."
-    # wipefs -af "$TARGET_DISK"
-    sgdisk -Z "$TARGET_DISK"
+    wipefs -af "$TARGET_DISK"
+    # sgdisk -Z "$TARGET_DISK"
     parted -s "$TARGET_DISK" mklabel gpt
     parted -s "$TARGET_DISK" mkpart primary fat32 1MiB "$EFI_SIZE"
     parted -s "$TARGET_DISK" set 1 esp on
@@ -219,7 +219,7 @@ configure_zram() {
 # Load zram module
 modprobe zram
 # Set zram size (half of RAM)
-echo $(awk '/MemTotal/ {print int($2*1024*0.5)}' /proc/meminfo) > /sys/block/zram0/disksize
+echo $(awk '/MemTotal/ {print int($2*1024*2)}' /proc/meminfo) > /sys/block/zram0/disksize
 # Set compression algorithm
 echo zstd > /sys/block/zram0/comp_algorithm
 # Format and enable swap
@@ -247,6 +247,9 @@ cleanup() {
 }
 
 show_summary() {
+    local EFI_PART=$(get_part "$TARGET_DISK" 1)
+    local ROOT_PART=$(get_part "$TARGET_DISK" 2)
+
     echo
     log_info "Installation Summary:"
     echo " Target Disk: $TARGET_DISK"
