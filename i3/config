@@ -8,7 +8,7 @@ exec nm-applet
 # exec feh --bg-fill -z ~/Pictures/wallpapers
 # exec --no-startup-id dunst
 
-bindsym Ctrl+Shift+space exec --no-startup-id "/home/rnoba/.local/bin/toggle-kb"
+# bindsym Ctrl+Shift+space exec --no-startup-id "/home/rnoba/.local/bin/toggle-kb"
 
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
