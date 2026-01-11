@@ -17,6 +17,9 @@ VOID_REPO="https://repo-default.voidlinux.org/current"
 ARCH="x86_64"
 XBPS_ARCH="$ARCH"
 
+EFI_UUID=""
+ROOT_UUID=""
+
 PACKAGES=(
     base-system
     grub
@@ -84,7 +87,7 @@ confirm_disk() {
 
 partition_disk() {
     log_info "Partitioning $TARGET_DISK..."
-    wipefs -af "$TARGET_DISK"
+    # wipefs -af "$TARGET_DISK"
     sgdisk -Z "$TARGET_DISK"
     parted -s "$TARGET_DISK" mklabel gpt
     parted -s "$TARGET_DISK" mkpart primary fat32 1MiB "$EFI_SIZE"
@@ -97,6 +100,10 @@ partition_disk() {
 }
 
 format_partitions() {
+		log_info "Formatting partitions..."
+    local EFI_PART=$(get_part "$TARGET_DISK" 1)
+    local ROOT_PART=$(get_part "$TARGET_DISK" 2)
+
     log_info "Formatting partitions..."
     EFI_PART=$(get_part "$TARGET_DISK" 1)
     ROOT_PART=$(get_part "$TARGET_DISK" 2)
