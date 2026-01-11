@@ -15,6 +15,7 @@ NAME="rnoba (Rafael Barros)"
 
 PACKAGES=(
 	exa
+	speech-dispatcher
 )
 
 log_info() { printf "%b[INFO]%b %s\n" "$GREEN" "$NC" "$1"; }
@@ -22,6 +23,28 @@ log_warn() { printf "%b[WARN]%b %s\n" "$YELLOW" "$NC" "$1"; }
 log_error() { printf "%b[ERROR]%b %s\n" "$RED" "$NC" "$1"; }
 
 backup_path() { mv "$1" "$1.backup.$(date +%Y%m%d_%H%M%S)"; }
+
+install_nix() {
+	if command -v nix &>/dev/null; then
+		log_warn "Nix already installed, skipping"
+		return 0
+	fi
+	
+	log_info "Installing Nix package manager..."
+	sh <(curl -L https://nixos.org/nix/install) --daemon --yes
+	
+	if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+		. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+	fi
+	
+	log_info "Nix installed successfully"
+	log_info "Enabling flakes and nix-command..."
+	mkdir -p "$CONFIG_DIR/nix"
+	cat > "$CONFIG_DIR/nix/nix.conf" <<-EOF
+		experimental-features = nix-command flakes
+	EOF
+	log_info "Nix configured with flakes support"
+}
 
 install_packages() {
 	local packages=("$@")
@@ -100,6 +123,7 @@ main() {
 	log_info "Git configured for $NAME <$EMAIL>"
 	
 	install_packages "${PACKAGES[@]}"
+	install_nix
 	
 	if command -v zsh &>/dev/null && [[ "$SHELL" != "$(command -v zsh)" ]]; then
 		log_info "Setting zsh as default shell..."
