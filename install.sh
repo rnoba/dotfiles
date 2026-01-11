@@ -143,6 +143,8 @@ main() {
 	echo "  3. Logout and login again to use zsh"
 	echo "  4. Install AUR helper (yay/paru): git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si"
 	echo "  5. Customize your configs in $CONFIG_DIR"
+
+	xauth add $DISPLAY . $(mcookie)
 }
 
 main "$@"
