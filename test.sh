@@ -11,8 +11,8 @@ HOSTNAME="rnoba"
 TIMEZONE="UTC"
 LOCALE="en_US.UTF-8"
 KEYMAP="us"
-TARGET_DISK="/dev/nvme0n1"           # Change as needed (e.g., /dev/sda)
-EFI_SIZE="512M"                      # Reasonable size for EFI
+TARGET_DISK="/dev/nvme0n1"
+EFI_SIZE="512M"
 VOID_REPO="https://repo-default.voidlinux.org/current"
 ARCH="x86_64"
 XBPS_ARCH="$ARCH"
@@ -51,8 +51,6 @@ PACKAGES=(
     noto-fonts-cjk
     noto-fonts-emoji
     nerd-fonts
-    nvidia
-    nvidia-libs-32bit
     vulkan-loader
     vulkan-tools
     ripgrep
@@ -105,8 +103,6 @@ format_partitions() {
     local ROOT_PART=$(get_part "$TARGET_DISK" 2)
 
     log_info "Formatting partitions..."
-    EFI_PART=$(get_part "$TARGET_DISK" 1)
-    ROOT_PART=$(get_part "$TARGET_DISK" 2)
     mkfs.vfat -F32 "$EFI_PART"
     mkfs.ext4 -F "$ROOT_PART"
     EFI_UUID=$(blkid -s UUID -o value "$EFI_PART")
@@ -115,6 +111,9 @@ format_partitions() {
 }
 
 mount_partitions() {
+    local EFI_PART=$(get_part "$TARGET_DISK" 1)
+    local ROOT_PART=$(get_part "$TARGET_DISK" 2)
+
     log_info "Mounting partitions..."
     mount "$ROOT_PART" /mnt
     mkdir -p /mnt/boot/efi
