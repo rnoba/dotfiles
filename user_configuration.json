@@ -123,6 +123,7 @@
 		"xorg",
 		"tmux",
 		"xclip",
+		"zsh",
 		"git",
 		"direnv",
 		"flameshot"
