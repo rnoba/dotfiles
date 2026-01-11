@@ -78,11 +78,14 @@ safe_link() {
 main() {
 	log_info "Starting Arch Linux post-installation setup..."
 	
-	mkdir -p "$CONFIG_DIR" "$DATA_DIR"
-	mkdir -p "$FIREFOX_CONFIG"
+	mkdir -p "$CONFIG_DIR" "$DATA_DIR" "$FIREFOX_CONFIG"
 	
 	log_info "Copying dotfiles..."
 	safe_copy "./.zshenv" "$HOME/.zshenv"
+	if [[ -e "$HOME/.zshenv" ]]; then
+		source "$HOME/.zshenv"
+	fi
+
 	safe_copy "./zsh" "$CONFIG_DIR/zsh"
 	safe_copy "./alacritty" "$CONFIG_DIR/alacritty"
 	safe_copy "./nvim" "$CONFIG_DIR/nvim"
