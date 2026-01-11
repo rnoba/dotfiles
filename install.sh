@@ -79,6 +79,7 @@ main() {
 	log_info "Starting Arch Linux post-installation setup..."
 	
 	mkdir -p "$CONFIG_DIR" "$DATA_DIR"
+	mkdir -p "$FIREFOX_CONFIG"
 	
 	log_info "Copying dotfiles..."
 	safe_copy "./.zshenv" "$HOME/.zshenv"
