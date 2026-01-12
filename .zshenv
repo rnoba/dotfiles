@@ -2,6 +2,7 @@ export ZDOTDIR="$HOME/.config/zsh/"
 export HISTFILE="$HOME/.local/share/histfile"
 export PYTHON_HISTORY="$HOME/.local/share/python/history"
 
+# export SSLKEYLOGFILE="$HOME/ssl-key.log"
 export EDITOR=nvim
 export ARCH=x86_64
 export ARCHFLAGS="-arch $ARCH"
@@ -40,4 +41,3 @@ export N_PREFIX="$JUNK_PATH/N_node"
 export __GL_SHADER_DISK_CACHE_PATH="$JUNK_PATH"
 
 export NIXPKGS_ALLOW_UNFREE=1
-# export NIX_PATH="$JUNK_PATH/nix"
