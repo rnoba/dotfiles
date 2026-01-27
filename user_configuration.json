@@ -112,6 +112,7 @@
 		"nvidia-open",
 		"nvidia-settings",
 		"nvidia-utils",
+		"cuda",
 		"ttf-noto-nerd",
 		"unzip",
 		"vulkan-headers",
