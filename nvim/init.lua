@@ -160,15 +160,15 @@ require("lazy").setup({
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if
-							client
-							and client_supports_method(
-								client,
-								vim.lsp.protocol.Methods.textDocument_documentHighlight,
-								event.buf
-							)
+						client
+						and client_supports_method(
+							client,
+							vim.lsp.protocol.Methods.textDocument_documentHighlight,
+							event.buf
+						)
 					then
 						local highlight_augroup =
-								vim.api.nvim_create_augroup("rnoba-lsp-highlight", { clear = false })
+						vim.api.nvim_create_augroup("rnoba-lsp-highlight", { clear = false })
 
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 							buffer = event.buf,
@@ -192,8 +192,8 @@ require("lazy").setup({
 					end
 
 					if
-							client
-							and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
+						client
+						and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
 					then
 						map("<leader>th", function()
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
@@ -233,7 +233,9 @@ require("lazy").setup({
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 			local servers = {
-				ts_ls = {},
+				ts_ls = {
+					cmd = { "bunx", "typescript-language-server", "--stdio" },
+				},
 				prismals = {},
 				clangd = {},
 				tailwindcss = {},
@@ -309,10 +311,24 @@ require("lazy").setup({
 					{ name = "copilot", group_index = 2 },
 					{ name = 'nvim_lsp' },
 				}, {
-					{ name = 'buffer' },
-				})
+						{ name = 'buffer' },
+					})
 			}
 		end,
+	},
+
+	{
+		"sphamba/smear-cursor.nvim",
+
+		opts = {
+			smear_between_buffers = true,
+			smear_between_neighbor_lines = true,
+			-- stiffness = 0.8,
+			-- trailing_stiffness = 0.5,
+			scroll_buffer_space = true,
+			legacy_computing_symbols_support = false,
+			smear_insert_mode = true,
+		},
 	},
 
 	{
@@ -417,21 +433,21 @@ require("lazy").setup({
 	},
 
 }, {
-	ui = {
-		icons = vim.g.have_nerd_font and {} or {
-			cmd = "⌘",
-			config = "🛠",
-			event = "📅",
-			ft = "📂",
-			init = "⚙",
-			keys = "🗝",
-			plugin = "🔌",
-			runtime = "💻",
-			require = "🌙",
-			source = "📄",
-			start = "🚀",
-			task = "📌",
-			lazy = "💤 ",
+		ui = {
+			icons = vim.g.have_nerd_font and {} or {
+				cmd = "⌘",
+				config = "🛠",
+				event = "📅",
+				ft = "📂",
+				init = "⚙",
+				keys = "🗝",
+				plugin = "🔌",
+				runtime = "💻",
+				require = "🌙",
+				source = "📄",
+				start = "🚀",
+				task = "📌",
+				lazy = "💤 ",
+			},
 		},
-	},
-})
+	})
