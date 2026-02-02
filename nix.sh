@@ -1,5 +1,6 @@
 # Only execute this file once per shell.
 # This file is tested by tests/installer/default.nix.
+# goes in /etc/profile.d/nix.sh
 if [ -n "${__ETC_PROFILE_NIX_SOURCED:-}" ]; then return; fi
 export __ETC_PROFILE_NIX_SOURCED=1
 
