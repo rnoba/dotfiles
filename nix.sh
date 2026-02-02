@@ -1,54 +1,45 @@
-#sync with https://github.com/NixOS/nix/blob/3be58fe1bc781fd39649f616c8ba4e5be672d505/scripts/nix-profile-daemon.sh.in
+# Only execute this file once per shell.
+# This file is tested by tests/installer/default.nix.
+if [ -n "${__ETC_PROFILE_NIX_SOURCED:-}" ]; then return; fi
+export __ETC_PROFILE_NIX_SOURCED=1
 
-NIX_JUNK_PATH="$HOME/.local/share/nix"
-
-NIX_PROFILE="$NIX_JUNK_PATH/profile"
-NIX_CHANNELS="$NIX_JUNK_PATH/channels"
-NIX_DEFEXPR="$NIX_JUNK_PATH/defexpr"
-
-export NIX_USER_PROFILE_DIR="/nix/var/nix/profiles/per-user/$USER"
-export NIX_PROFILES="/nix/var/nix/profiles/default $NIX_PROFILE"
-
-# Set up the per-user profile.
-mkdir -m 0755 -p $NIX_USER_PROFILE_DIR
-if ! test -O "$NIX_USER_PROFILE_DIR"; then
-	echo "WARNING: bad ownership on $NIX_USER_PROFILE_DIR" >&2
+NIX_LINK=$HOME/.nix-profile
+if [ -n "${XDG_STATE_HOME-}" ]; then
+    NIX_LINK_NEW="$XDG_STATE_HOME/nix/profile"
+else
+    NIX_LINK_NEW=$HOME/.local/state/nix/profile
+fi
+if [ -e "$NIX_LINK_NEW" ]; then
+    if [ -t 2 ] && [ -e "$NIX_LINK" ]; then
+        warning="\033[1;35mwarning:\033[0m"
+        printf "$warning Both %s and legacy %s exist; using the former.\n" "$NIX_LINK_NEW" "$NIX_LINK" 1>&2
+        if [ "$(realpath "$NIX_LINK")" = "$(realpath "$NIX_LINK_NEW")" ]; then
+            printf "         Since the profiles match, you can safely delete either of them.\n" 1>&2
+        else
+            # This should be an exceptionally rare occasion: the only way to get it would be to
+            # 1. Update to newer Nix;
+            # 2. Remove .nix-profile;
+            # 3. Set the $NIX_LINK_NEW to something other than the default user profile;
+            # 4. Roll back to older Nix.
+            # If someone did all that, they can probably figure out how to migrate the profile.
+            printf "$warning Profiles do not match. You should manually migrate from %s to %s.\n" "$NIX_LINK" "$NIX_LINK_NEW" 1>&2
+        fi
+    fi
+    NIX_LINK="$NIX_LINK_NEW"
 fi
 
-if test -w $HOME; then
-	if ! test -L "$NIX_PROFILE"; then
-		if test "$USER" != root; then
-			ln -s $NIX_USER_PROFILE_DIR/profile "$NIX_PROFILE"
-		else
-			ln -s /nix/var/nix/profiles/default "$NIX_PROFILE"
-		fi
-	fi
+export NIX_PROFILES="@localstatedir@/nix/profiles/default $NIX_LINK"
 
-	# Subscribe the root user to the NixOS channel by default.
-	if [ "$USER" = root -a ! -e "$NIX_CHANNELS" ]; then
-		echo "https://nixos.org/channels/nixpkgs-unstable nixpkgs" > "$NIX_CHANNELS"
-	fi
-
-	# Create the per-user garbage collector roots directory.
-	NIX_USER_GCROOTS_DIR=/nix/var/nix/gcroots/per-user/$USER
-	mkdir -m 0755 -p $NIX_USER_GCROOTS_DIR
-	if ! test -O "$NIX_USER_GCROOTS_DIR"; then
-		echo "WARNING: bad ownership on $NIX_USER_GCROOTS_DIR" >&2
-	fi
-
-	# Set up a default Nix expression from which to install stuff.
-	if [ ! -e "$NIX_DEFEXPR" -o -L "$NIX_DEFEXPR" ]; then
-		rm -f "$NIX_DEFEXPR"
-	
-		mkdir -p "$NIX_DEFEXPR"
-		if [ "$USER" != root ]; then
-			ln -s /nix/var/nix/profiles/per-user/root/channels "$NIX_DEFEXPR/channels_root"
-		fi
-	fi
+# Populate bash completions, .desktop files, etc
+if [ -z "${XDG_DATA_DIRS-}" ]; then
+    # According to XDG spec the default is /usr/local/share:/usr/share, don't set something that prevents that default
+    export XDG_DATA_DIRS="/usr/local/share:/usr/share:$NIX_LINK/share:/nix/var/nix/profiles/default/share"
+else
+    export XDG_DATA_DIRS="$XDG_DATA_DIRS:$NIX_LINK/share:/nix/var/nix/profiles/default/share"
 fi
 
 # Set $NIX_SSL_CERT_FILE so that Nixpkgs applications like curl work.
-if [ ! -z "${NIX_SSL_CERT_FILE:-}" ]; then
+if [ -n "${NIX_SSL_CERT_FILE:-}" ]; then
     : # Allow users to override the NIX_SSL_CERT_FILE
 elif [ -e /etc/ssl/certs/ca-certificates.crt ]; then # NixOS, Ubuntu, Debian, Gentoo, Arch
     export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
@@ -58,12 +49,24 @@ elif [ -e /etc/ssl/certs/ca-bundle.crt ]; then # Old NixOS
     export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
 elif [ -e /etc/pki/tls/certs/ca-bundle.crt ]; then # Fedora, CentOS
     export NIX_SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt
-elif [ -e "$NIX_USER_PROFILE_DIR/etc/ssl/certs/ca-bundle.crt" ]; then # fall back to cacert in the user's Nix profile
-    export NIX_SSL_CERT_FILE=$NIX_USER_PROFILE_DIR/etc/ssl/certs/ca-bundle.crt
-elif [ -e "/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt" ]; then # fall back to cacert in the default Nix profile
-    export NIX_SSL_CERT_FILE=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
+else
+  # Fall back to what is in the nix profiles, favouring whatever is defined last.
+  check_nix_profiles() {
+    if [ -n "${ZSH_VERSION:-}" ]; then
+      # Zsh by default doesn't split words in unquoted parameter expansion.
+      # Set local_options for these options to be reverted at the end of the function
+      # and shwordsplit to force splitting words in $NIX_PROFILES below.
+      setopt local_options shwordsplit
+    fi
+    for i in $NIX_PROFILES; do
+      if [ -e "$i/etc/ssl/certs/ca-bundle.crt" ]; then
+        export NIX_SSL_CERT_FILE=$i/etc/ssl/certs/ca-bundle.crt
+      fi
+    done
+  }
+  check_nix_profiles
+  unset -f check_nix_profiles
 fi
 
-export PATH=/nix/var/nix/profiles/default/bin:$PATH
-export PATH="$NIX_PROFILE/bin:$PATH"
-export NIX_PATH="$NIX_DEFEXPR/channels"
+export PATH="$NIX_LINK/bin:@localstatedir@/nix/profiles/default/bin:$PATH"
+unset NIX_LINK NIX_LINK_NEW
