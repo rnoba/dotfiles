@@ -66,4 +66,5 @@ fi
 
 export PATH=/nix/var/nix/profiles/default/bin:$PATH
 export PATH="$NIX_PROFILE/bin:$PATH"
-export NIX_PATH="$NIX_DEFEXPR/channels"
+export NIX_PATH="nixpkgs=/nix/profiles/per-user/root/channels/nixpkgs"
+#export NIX_PATH="$NIX_DEFEXPR/channels"
