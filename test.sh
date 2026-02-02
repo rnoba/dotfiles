@@ -688,25 +688,30 @@ CHROOT_END
 	
 	log_info "AUDIO DONE"
 }
-
 setup_dotfiles() {
 	log_info "DOTFILES..."
 	
-	xchroot /mnt /bin/bash <<'CHROOT_END'
+	xchroot /mnt /bin/bash <<CHROOT_END
 set -e
 
 REPO=https://github.com/rnoba/dotfiles
-DEST_DIR=/home/rnoba/Public
-mkdir -p /home/rnoba/.config
-mkdir -p "$DEST_DIR"
-pushd "$DEST_DIR" 
-git clone "$REPO" Dotfiles
-pushd ./Dotfiles 
-bash ./install.sh
-cp ./.Xsession /home/rnoba
-cp ./.zshenv /home/rnoba
-popd
-popd
+DEST_DIR=/home/$USER_NAME/Public
+
+# Create directories and set ownership properly
+mkdir -p /home/$USER_NAME/.config
+mkdir -p "\$DEST_DIR"
+chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/.config
+chown -R $USER_NAME:$USER_NAME "\$DEST_DIR"
+
+# Clone and install as the user
+cd "\$DEST_DIR"
+sudo -u $USER_NAME git clone "\$REPO" Dotfiles
+cd ./Dotfiles
+sudo -u $USER_NAME bash ./install.sh
+
+# Copy files with proper ownership
+sudo -u $USER_NAME cp ./.Xsession /home/$USER_NAME/
+sudo -u $USER_NAME cp ./.zshenv /home/$USER_NAME/
 CHROOT_END
 	
 	if [[ $? -ne 0 ]]; then
@@ -714,7 +719,7 @@ CHROOT_END
 		exit 1
 	fi
 	
-	log_info "AUDIO DONE"
+	log_info "DOTFILES DONE"
 }
 # ============================================================================
 # CLEANUP
