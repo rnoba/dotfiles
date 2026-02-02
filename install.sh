@@ -43,7 +43,7 @@ safe_link() {
 
 setup_nix() {
 	sudo xbps-install -Sy nix
-	sudo ln -s /etc/sv/nix-daemon /var/service
+	sudo ln -s /etc/sv /var/service
 	sudo cp ./nix.sh /etc/profile.d/nix.sh
 
 	sudo echo "connect-timeout = 60000" >> /etc/nix/
@@ -52,6 +52,11 @@ setup_nix() {
 	nix-channel --add https://nixos.org/channels/nixos-24.11 nixpkgs
 
 	nix-channel --update
+
+	cp -r "$HOME/.nix-defexpr/*" "$HOME/.local/share/nix/defexpr"
+
+	rm -f "$HOME/.nix-defexpr/"
+	rm -f "$HOME/nix-channels"
 }
 
 main() {
