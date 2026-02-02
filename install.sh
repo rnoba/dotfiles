@@ -42,23 +42,47 @@ safe_link() {
 }
 
 setup_nix() {
-	sudo xbps-install -Sy nix
-	sudo ln -s /etc/sv/nix-daemon /var/service
+	log_info "Setting up Nix package manager with XDG compliance..."
 	
-	sudo cp ./nix.sh /etc/profile.d/nix.sh
-	#sudo sv start nix-daemon
+	if ! command -v nix &>/dev/null; then
+		log_info "Installing Nix..."
+		sudo xbps-install -Sy nix || {
+			log_error "Failed to install Nix"
+			return 1
+		}
+	fi
+	
+	log_info "Configuring Nix to use XDG directories..."
+	if ! grep -q "use-xdg-base-directories" /etc/nix/nix.conf 2>/dev/null; then
+		echo "use-xdg-base-directories = true" | sudo tee -a /etc/nix/nix.conf > /dev/null
+	fi
+	
+	if ! grep -q "connect-timeout" /etc/nix/nix.conf 2>/dev/null; then
+		echo "connect-timeout = 60000" | sudo tee -a /etc/nix/nix.conf > /dev/null
+	fi
+	
+	if [[ ! -L /var/service/nix-daemon ]]; then
+		log_info "Enabling nix-daemon service..."
+		sudo ln -sf /etc/sv/nix-daemon /var/service/
+	fi
+	
+	sleep 3
 
-	echo "connect-timeout = 60000" | sudo tee -a /etc/nix/nix.conf
-
-	nix-channel --add http://nixos.org/channels/nixpkgs-unstable unstable
-	nix-channel --add https://nixos.org/channels/nixos-24.11 nixpkgs
-
-	nix-channel --update
-
-	cp -r "$HOME/.nix-defexpr/*" "$HOME/.local/share/nix/defexpr"
-
-	rm -rf "$HOME/.nix-defexpr/"
-	rm -rf "$HOME/.nix-channels"
+	if ! sudo sv status nix-daemon | grep -q "run"; then
+		log_warn "Nix daemon may not be running yet"
+	fi
+	
+	log_info "Nix installed with XDG compliance enabled"
+	log_info ""
+	log_info "Nix will use these directories:"
+	log_info "  Config:  \$HOME/.config/nix/"
+	log_info "  State:   \$HOME/.local/state/nix/"
+	log_info "  Cache:   \$HOME/.cache/nix/"
+	log_info ""
+	log_info "IMPORTANT: Log out and log back in for changes to take effect."
+	log_info "After re-login, you can manage channels with:"
+	log_info "  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs"
+	log_info "  nix-channel --update"
 }
 
 main() {
