@@ -27,7 +27,7 @@ readonly LOCALE="en_US.UTF-8"
 readonly KEYMAP="us"
 readonly TARGET_DISK="/dev/nvme0n1"
 readonly EFI_SIZE="500MiB"
-readonly VOID_REPO="https://repo-default.voidlinux.org/current"
+readonly VOID_REPO="https://repo-fastly.voidlinux.org/current"
 readonly ARCH="x86_64"
 
 # Partition labels (GPT partition table labels)
