@@ -14,8 +14,8 @@ alias ls='exa --icons --group-directories-first --sort type'
 
 setopt prompt_subst
 PROMPT='%F{magenta}%n in %F{purple}%~%f '
-[[ -v TMUX ]] && PROMPT="%F{cyan}[T] $PROMPT"
-[[ -v IN_NIX_SHELL ]] && PROMPT="%F{magenta}[N] $PROMPT"
+[[ -v TMUX ]] && PROMPT="%F{cyan}[T]$PROMPT"
+[[ -v IN_NIX_SHELL ]] && PROMPT="%F{magenta}[N]$PROMPT"
 
 bindkey "^R" history-incremental-pattern-search-backward
 bindkey "^L" forward-word
