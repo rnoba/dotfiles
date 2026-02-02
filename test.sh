@@ -696,8 +696,8 @@ setup_dotfiles() {
 set -e
 
 REPO=https://github.com/rnoba/dotfiles
-DEST_DIR=/home/rnoba/public
-
+DEST_DIR=/home/rnoba/Public
+mkdir -p /home/rnoba/.config
 mkdir -p "$DEST_DIR"
 pushd "$DEST_DIR" 
 git clone "$REPO" Dotfiles
