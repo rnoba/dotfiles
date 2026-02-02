@@ -380,8 +380,36 @@ EOF
 	log_debug "Setting timezone: $TIMEZONE"
 	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /mnt/etc/localtime
 	
-	log_debug "Setting keymap: $KEYMAP"
-	echo "KEYMAP=$KEYMAP" > /mnt/etc/rc.conf
+	log_debug "Configuring rc.conf"
+	cat > /mnt/etc/rc.conf <<EOF
+# /etc/rc.conf - system configuration for void
+
+# Set the host name.
+# NOTE: it's preferred to declare the hostname in /etc/hostname instead
+#HOSTNAME="$HOSTNAME"
+
+# Set RTC to UTC or localtime.
+HARDWARECLOCK="UTC"
+
+# Set timezone, availables timezones at /usr/share/zoneinfo.
+# NOTE: it's preferred to set the timezone in /etc/localtime instead
+#TIMEZONE="$TIMEZONE"
+
+# Keymap to load, see loadkeys(8).
+KEYMAP="$KEYMAP"
+
+# Console font to load, see setfont(8).
+#FONT="lat9w-16"
+
+# Console map to load, see setfont(8).
+#FONT_MAP=
+
+# Font unimap to load, see setfont(8).
+#FONT_UNIMAP=
+
+# Kernel modules to load, delimited by blanks.
+#MODULES=""
+EOF
 	
 	log_info "System configuration completed"
 }
