@@ -52,14 +52,12 @@ setup_nix() {
 		}
 	fi
 	
-	log_info "Configuring Nix to use XDG directories..."
-	if ! grep -q "use-xdg-base-directories" /etc/nix/nix.conf 2>/dev/null; then
-		echo "use-xdg-base-directories = true" | sudo tee -a /etc/nix/nix.conf > /dev/null
-	fi
-	
-	if ! grep -q "connect-timeout" /etc/nix/nix.conf 2>/dev/null; then
-		echo "connect-timeout = 60000" | sudo tee -a /etc/nix/nix.conf > /dev/null
-	fi
+	cat > /etc/nix/nix.conf <<EOF
+		build-users-group = nixbld
+		build-use-sandbox = true
+		use-xdg-base-directories = true
+		connect-timeout = 60000
+	EOF
 	
 	if [[ ! -L /var/service/nix-daemon ]]; then
 		log_info "Enabling nix-daemon service..."
