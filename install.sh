@@ -13,23 +13,11 @@ FIREFOX_CONFIG="$CONFIG_DIR/mozilla"
 EMAIL="rnoba.iwb@gmail.com"
 NAME="rnoba (Rafael Barros)"
 
-PACKAGES=(
-	exa
-	speech-dispatcher
-)
-
 log_info() { printf "%b[INFO]%b %s\n" "$GREEN" "$NC" "$1"; }
 log_warn() { printf "%b[WARN]%b %s\n" "$YELLOW" "$NC" "$1"; }
 log_error() { printf "%b[ERROR]%b %s\n" "$RED" "$NC" "$1"; }
 
 backup_path() { mv "$1" "$1.backup.$(date +%Y%m%d_%H%M%S)"; }
-
-install_packages() {
-	local packages=("$@")
-	log_info "Installing packages (${#packages[@]})..."
-	sudo xbps-install -Sy "${packages[@]}"
-	log_info "Package installation complete"
-}
 
 safe_copy() {
 	local src="$1" dst="$2"
@@ -87,7 +75,7 @@ main() {
 	chmod 700 "$HOME/.ssh"
 	if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
 		log_info "Generating SSH key..."
-		ssh-keygen -t ed25519 -C "$EMAIL" -f "$HOME/.ssh/id_ed25519"
+		ssh-keygen -t ed25519 -C "$EMAIL" -f "$HOME/.ssh/id_ed25519" -N ''
 		chmod 600 "$HOME/.ssh/id_ed25519"
 		chmod 644 "$HOME/.ssh/id_ed25519.pub"
 		log_info "SSH public key:"
@@ -104,14 +92,7 @@ main() {
 	git config --global core.editor "${EDITOR:-vim}"
 	git config --global color.ui auto
 	log_info "Git configured for $NAME <$EMAIL>"
-	
-	install_packages "${PACKAGES[@]}"
-	
-	#if command -v zsh &>/dev/null && [[ "$SHELL" != "$(command -v zsh)" ]]; then
-		#log_info "Setting zsh as default shell..."
-		#chsh -s "$(command -v zsh)"
-		#log_info "Default shell changed to zsh (requires logout)"
-	#fi
+
 	
 	log_info "Done."
 }
