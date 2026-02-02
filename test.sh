@@ -28,7 +28,7 @@ PACKAGES=(
 	dbus elogind nftables
 	pipewire pulseaudio
 	p7zip unzip
-	alacritty zsh tmux i3 dmenu firefox mpv neovim flameshot
+	alacritty zsh tmux i3 i3blocks dmenu firefox mpv neovim flameshot
 	base-devel gcc clang git curl direnv
 	noto-fonts-ttf noto-fonts-cjk noto-fonts-emoji nerd-fonts
 	vulkan-loader ripgrep xclip
@@ -317,7 +317,7 @@ create_user() {
 	xchroot /mnt /bin/bash <<CHROOT_END
 set -e
 
-useradd -m -G wheel,audio,video,input,storage,optical -s /bin/bash "$USER_NAME"
+useradd -m -G wheel,audio,video,input,storage,optical -s /bin/zsh "$USER_NAME"
 
 echo -e "$USER_PASSWORD\n$USER_PASSWORD" | passwd "$USER_NAME"
 
