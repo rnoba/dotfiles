@@ -46,7 +46,7 @@ setup_nix() {
 	sudo ln -s /etc/sv /var/service
 	sudo cp ./nix.sh /etc/profile.d/nix.sh
 
-	sudo echo "connect-timeout = 60000" >> /etc/nix/
+	sudo echo "connect-timeout = 60000" >> /etc/nix/nix.conf
 
 	nix-channel --add http://nixos.org/channels/nixpkgs-unstable unstable
 	nix-channel --add https://nixos.org/channels/nixos-24.11 nixpkgs
