@@ -57,8 +57,8 @@ setup_nix() {
 
 	cp -r "$HOME/.nix-defexpr/*" "$HOME/.local/share/nix/defexpr"
 
-	rm -f "$HOME/.nix-defexpr/"
-	rm -f "$HOME/.nix-channels"
+	rm -rf "$HOME/.nix-defexpr/"
+	rm -rf "$HOME/.nix-channels"
 }
 
 main() {
