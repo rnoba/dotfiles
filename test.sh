@@ -31,12 +31,12 @@ readonly VOID_REPO="https://repo-fastly.voidlinux.org/current"
 readonly ARCH="x86_64"
 
 # Partition labels (GPT partition table labels)
-readonly EFI_PARTLABEL="EFI"
-readonly ROOT_PARTLABEL="VOID_ROOT"
+readonly EFI_PARTLABEL="Efi"
+readonly ROOT_PARTLABEL="Root"
 
 # Filesystem labels (used in fstab and mounting)
-readonly EFI_FSLABEL="EFI"
-readonly ROOT_FSLABEL="VOID_ROOT"
+readonly EFI_FSLABEL="Efi"
+readonly ROOT_FSLABEL="Root"
 
 # User configuration
 readonly USER_NAME="$HOSTNAME"
