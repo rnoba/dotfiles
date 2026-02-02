@@ -113,16 +113,7 @@ main() {
 		#log_info "Default shell changed to zsh (requires logout)"
 	#fi
 	
-	log_info "done..."
-	log_info "Setup complete!"
-	echo
-	echo "Next steps:"
-	echo "  1. Review backups (*.backup.*)"
-	echo "  2. Add your SSH key to GitHub/GitLab:"
-	echo "     ${GREEN}$(cat "$HOME/.ssh/id_ed25519.pub" 2>/dev/null || echo "SSH key not generated")${NC}"
-	echo "  3. Logout and login again to use zsh"
-	echo "  4. Install AUR helper (yay/paru): git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si"
-	echo "  5. Customize your configs in $CONFIG_DIR"
+	log_info "Done."
 }
 
 main "$@"
