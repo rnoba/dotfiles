@@ -547,8 +547,8 @@ if ! grep -q "^$USER_NAME:[^!*]" /etc/shadow; then
 	exit 1
 fi
 
-if ! grep -q "^%wheel ALL=(ALL:ALL) ALL" /etc/sudoers; then
-	echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
+if ! grep -q "^%wheel ALL=(ALL:ALL) NOPASSWD: ALL" /etc/sudoers; then
+	echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 fi
 
 echo "User created successfully"
