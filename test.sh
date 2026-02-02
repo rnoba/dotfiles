@@ -14,7 +14,7 @@ readonly TIMEZONE="America/Sao_Paulo"
 readonly LOCALE="en_US.UTF-8"
 readonly KEYMAP="us"
 readonly TARGET_DISK="/dev/nvme0n1"
-readonly EFI_SIZE="1G"
+readonly EFI_SIZE="1GiB"
 readonly VOID_REPO="https://repo-fastly.voidlinux.org/current"
 readonly ARCH="x86_64"
 
