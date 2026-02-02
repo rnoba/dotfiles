@@ -6,7 +6,7 @@ export PYTHON_HISTORY="$HOME/.local/share/python/history"
 export EDITOR=nvim
 export ARCH=x86_64
 export ARCHFLAGS="-arch $ARCH"
-export XCURSOR_PATH="${XCURSOR_PATH}:$HOME/.local/share/icons"
+#export XCURSOR_PATH="${XCURSOR_PATH}:$HOME/.local/share/icons"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.local/cache"
