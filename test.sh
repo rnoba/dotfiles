@@ -839,7 +839,6 @@ main() {
 	log_info "=== SYSTEM CONFIGURATION ==="
 	configure_system
 	setup_audio
-	setup_dotfiles
 	generate_fstab
 	configure_dracut
 	configure_dns
@@ -855,6 +854,9 @@ main() {
 	install_bootloader    # Last - needs everything configured
 	echo
 	
+	log_info "=== DOTFILES ==="
+	setup_dotfiles
+	echo
 	# Cleanup
 	log_info "=== CLEANUP ==="
 	cleanup
