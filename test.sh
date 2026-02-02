@@ -618,7 +618,7 @@ create_user() {
 set -e
 
 # Create user with standard groups
-useradd -m -G wheel,audio,video,input,storage,optical -s /bin/zsh "$USER_NAME"
+useradd -m -G wheel,audio,video,input,storage,optical -s "$(command -v zsh || echo /bin/zsh)" "$USER_NAME"
 
 # Set user password
 echo -e "$USER_PASSWORD\n$USER_PASSWORD" | passwd "$USER_NAME"
@@ -689,6 +689,33 @@ CHROOT_END
 	log_info "AUDIO DONE"
 }
 
+setup_dotfiles() {
+	log_info "DOTFILES..."
+	
+	xchroot /mnt /bin/bash <<'CHROOT_END'
+set -e
+
+REPO=https://github.com/rnoba/dotfiles
+DEST_DIR=/home/rnoba/public
+
+mkdir -p "$DEST_DIR"
+pushd "$DEST_DIR" 
+git clone "$REPO" Dotfiles
+pushd ./Dotfiles 
+bash ./install.sh
+cp ./.Xsession /home/rnoba
+cp ./.zshenv /home/rnoba
+popd
+popd
+CHROOT_END
+	
+	if [[ $? -ne 0 ]]; then
+		log_error "DOTFILES setup failed"
+		exit 1
+	fi
+	
+	log_info "AUDIO DONE"
+}
 # ============================================================================
 # CLEANUP
 # ============================================================================
@@ -812,6 +839,7 @@ main() {
 	log_info "=== SYSTEM CONFIGURATION ==="
 	configure_system
 	setup_audio
+	setup_dotfiles
 	generate_fstab
 	configure_dracut
 	configure_dns
