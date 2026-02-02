@@ -43,8 +43,10 @@ safe_link() {
 
 setup_nix() {
 	sudo xbps-install -Sy nix
-	sudo ln -s /etc/sv /var/service
+	sudo ln -s /etc/sv/nix-daemon /var/service
+	
 	sudo cp ./nix.sh /etc/profile.d/nix.sh
+	sudo sv start nix-daemon
 
 	sudo echo "connect-timeout = 60000" >> /etc/nix/nix.conf
 
