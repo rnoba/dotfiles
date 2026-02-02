@@ -107,11 +107,11 @@ main() {
 	
 	install_packages "${PACKAGES[@]}"
 	
-	if command -v zsh &>/dev/null && [[ "$SHELL" != "$(command -v zsh)" ]]; then
-		log_info "Setting zsh as default shell..."
-		chsh -s "$(command -v zsh)"
-		log_info "Default shell changed to zsh (requires logout)"
-	fi
+	#if command -v zsh &>/dev/null && [[ "$SHELL" != "$(command -v zsh)" ]]; then
+		#log_info "Setting zsh as default shell..."
+		#chsh -s "$(command -v zsh)"
+		#log_info "Default shell changed to zsh (requires logout)"
+	#fi
 	
 	log_info "done..."
 	log_info "Setup complete!"
