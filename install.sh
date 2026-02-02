@@ -44,7 +44,7 @@ safe_link() {
 setup_nix() {
 	mkdir -p "$HOME/.local/share/nix"
 	sudo xbps-install -Sy nix
-	sudo ln -s /etc/sv /var/service
+	sudo ln -s /etc/sv/nix-daemon /var/service
 	sudo cp ./nix.sh /etc/profile.d/nix.sh
 
 	nix-channel --add http://nixos.org/channels/nixpkgs-unstable
