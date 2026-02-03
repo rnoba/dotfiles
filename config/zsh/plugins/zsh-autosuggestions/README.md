@@ -1,5 +1,7 @@
 # zsh-autosuggestions
 
+# https://github.com/zsh-users/zsh-autosuggestions
+
 _[Fish](http://fishshell.com/)-like fast/unobtrusive autosuggestions for zsh._
 
 It suggests commands as you type based on history and completions.

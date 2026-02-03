@@ -1,5 +1,6 @@
 zsh-syntax-highlighting [![Build Status][build-status-image]][build-status]
 =======================
+# https://github.com/zsh-users/zsh-syntax-highlighting
 
 **[Fish shell][fish]-like syntax highlighting for [Zsh][zsh].**
 
