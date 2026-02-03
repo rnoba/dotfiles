@@ -453,7 +453,7 @@ EOF
 enable_services() {
 	log_info "Enabling system services..."
 	
-	local services=(NetworkManager dbus elogind)
+	local services=(NetworkManager dbus elogind nftables)
 	
 	for svc in "${services[@]}"; do
 		if [[ -d /mnt/etc/sv/"$svc" ]]; then
