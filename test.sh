@@ -389,7 +389,7 @@ EOF
 #HOSTNAME="$HOSTNAME"
 
 # Set RTC to UTC or localtime.
-HARDWARECLOCK="localtime"
+HARDWARECLOCK="UTC"
 
 # Set timezone, availables timezones at /usr/share/zoneinfo.
 # NOTE: it's preferred to set the timezone in /etc/localtime instead
