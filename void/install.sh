@@ -328,60 +328,60 @@ update_xbps_and_system() {
 install_additional_packages() {
 	log_info "Installing additional packages (${#PACKAGES[@]} packages)..."
 
-		xbps-install -Sy -r /mnt -R "$VOID_REPO" "${PACKAGES[@]}" || {
-			log_error "Failed to install additional packages"
-					log_error "Check package names and repository availability"
-					exit 1
-				}
+	xbps-install -Sy -r /mnt -R "$VOID_REPO" "${PACKAGES[@]}" || {
+		log_error "Failed to install additional packages"
+		log_error "Check package names and repository availability"
+		exit 1
+	}
 
-			log_info "Additional packages installed successfully"
-		}
+	log_info "Additional packages installed successfully"
+}
 
-	generate_fstab() {
-		log_info "Generating /etc/fstab with filesystem labels..."
+generate_fstab() {
+	log_info "Generating /etc/fstab with filesystem labels..."
 
-		log_debug "Running xgenfstab -L /mnt..."
-		xgenfstab -L /mnt > /mnt/etc/fstab || {
-			log_error "Failed to generate fstab"
-					exit 1
-				}
-
-			if [[ ! -s /mnt/etc/fstab ]]; then
-				log_error "Generated fstab is empty"
+	log_debug "Running xgenfstab -L /mnt..."
+	xgenfstab -L /mnt > /mnt/etc/fstab || {
+		log_error "Failed to generate fstab"
 				exit 1
-			fi
+			}
 
-			if ! grep -q "LABEL=$ROOT_FSLABEL" /mnt/etc/fstab; then
-				log_warn "fstab does not contain expected root label"
-				log_warn "fstab may be using UUIDs instead of labels"
-			fi
+		if [[ ! -s /mnt/etc/fstab ]]; then
+			log_error "Generated fstab is empty"
+			exit 1
+		fi
 
-			log_info "fstab generated successfully:"
-			cat /mnt/etc/fstab | grep -v '^#' | grep -v '^$' || true
-		}
+		if ! grep -q "LABEL=$ROOT_FSLABEL" /mnt/etc/fstab; then
+			log_warn "fstab does not contain expected root label"
+			log_warn "fstab may be using UUIDs instead of labels"
+		fi
 
-	configure_system() {
-		log_info "Configuring system..."
+		log_info "fstab generated successfully:"
+		cat /mnt/etc/fstab | grep -v '^#' | grep -v '^$' || true
+}
 
-		log_debug "Setting hostname: $HOSTNAME"
-		echo "$HOSTNAME" > /mnt/etc/hostname
+configure_system() {
+	log_info "Configuring system..."
 
-		log_debug "Configuring /etc/hosts"
-		cat > /mnt/etc/hosts <<EOF
+	log_debug "Setting hostname: $HOSTNAME"
+	echo "$HOSTNAME" > /mnt/etc/hostname
+
+	log_debug "Configuring /etc/hosts"
+	cat > /mnt/etc/hosts <<EOF
 127.0.0.1   localhost
 ::1         localhost
 127.0.1.1   $HOSTNAME.localdomain $HOSTNAME
 EOF
 
-log_debug "Setting locale: $LOCALE"
-echo "$LOCALE UTF-8" > /mnt/etc/default/libc-locales
-echo "LANG=$LOCALE" > /mnt/etc/locale.conf
+	log_debug "Setting locale: $LOCALE"
+	echo "$LOCALE UTF-8" > /mnt/etc/default/libc-locales
+	echo "LANG=$LOCALE" > /mnt/etc/locale.conf
 
-log_debug "Setting timezone: $TIMEZONE"
-ln -sf "/usr/share/zoneinfo/$TIMEZONE" /mnt/etc/localtime
+	log_debug "Setting timezone: $TIMEZONE"
+	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /mnt/etc/localtime
 
-log_debug "Configuring rc.conf"
-cat > /mnt/etc/rc.conf <<EOF
+	log_debug "Configuring rc.conf"
+	cat > /mnt/etc/rc.conf <<EOF
 # /etc/rc.conf - system configuration for void
 
 # Set the host name.
@@ -411,7 +411,7 @@ KEYMAP="$KEYMAP"
 #MODULES=""
 EOF
 
-log_info "System configuration completed"
+	log_info "System configuration completed"
 }
 
 configure_dracut() {
@@ -419,19 +419,19 @@ configure_dracut() {
 
 	mkdir -p /mnt/etc/dracut.conf.d
 
-	cat > /mnt/etc/dracut.conf.d/10-hostonly.conf <<EOF
+	cat > /mnt/etc/dracut.conf.d/10-hostonly.conf <<'EOF'
 # Hostonly mode - only include drivers needed for this system
 hostonly=yes
 hostonly_cmdline=yes
 EOF
 
-log_info "Dracut configured"
+	log_info "Dracut configured"
 }
 
 configure_dns() {
 	log_info "Configuring DNS resolution..."
 
-	cat > /mnt/etc/resolv.conf <<EOF
+	cat > /mnt/etc/resolv.conf <<'EOF'
 # Generated during installation
 # NetworkManager will manage this file after first boot
 nameserver 1.1.1.1
@@ -441,7 +441,7 @@ nameserver 8.8.4.4
 EOF
 
 mkdir -p /mnt/etc/NetworkManager/conf.d
-cat > /mnt/etc/NetworkManager/conf.d/dns.conf <<EOF
+cat > /mnt/etc/NetworkManager/conf.d/dns.conf <<'EOF'
 [main]
 dns=default
 rc-manager=resolvconf
@@ -570,15 +570,15 @@ mkswap /dev/zram0
 swapon /dev/zram0 -p 100
 EOF
 
-chmod +x /mnt/etc/rc.local
+	chmod +x /mnt/etc/rc.local
 
-log_info "zram configuration completed"
+	log_info "zram configuration completed"
 }
 
 chroot_reconfigure() {
 	log_info "Reconfiguring packages in chroot..."
 
-	xchroot /mnt /bin/bash <<CHROOT_END
+	xchroot /mnt /bin/bash <<'CHROOT_END'
 set -e
 
 echo "Generating locales..."
@@ -590,18 +590,18 @@ xbps-reconfigure -fa
 echo "Package reconfiguration completed"
 CHROOT_END
 
-if [[ $? -ne 0 ]]; then
-	log_error "Chroot reconfiguration failed"
-	exit 1
-fi
+	if [[ $? -ne 0 ]]; then
+		log_error "Chroot reconfiguration failed"
+		exit 1
+	fi
 
-log_info "Package reconfiguration completed"
+	log_info "Package reconfiguration completed"
 }
 
 set_root_password() {
 	log_info "Setting root password..."
 
-	xchroot /mnt /bin/bash <<CHROOT_END
+	xchroot /mnt /bin/bash <<'CHROOT_END'
 set -e
 
 if [[ ! -f /etc/shadow ]]; then
@@ -619,12 +619,12 @@ fi
 echo "Root password set successfully"
 CHROOT_END
 
-if [[ $? -ne 0 ]]; then
-	log_error "Failed to set root password"
-	exit 1
-fi
+	if [[ $? -ne 0 ]]; then
+		log_error "Failed to set root password"
+		exit 1
+	fi
 
-log_info "Root password set to: root"
+	log_info "Root password set to: root"
 }
 
 create_user() {
@@ -648,18 +648,18 @@ fi
 echo "User created successfully"
 CHROOT_END
 
-if [[ $? -ne 0 ]]; then
-	log_error "Failed to create user"
-	exit 1
-fi
+	if [[ $? -ne 0 ]]; then
+		log_error "Failed to create user"
+		exit 1
+	fi
 
-log_info "User '$USER_NAME' created with password: $USER_PASSWORD"
+	log_info "User '$USER_NAME' created with password: $USER_PASSWORD"
 }
 
 install_bootloader() {
 	log_info "Installing GRUB bootloader..."
 
-	xchroot /mnt /bin/bash <<CHROOT_END
+	xchroot /mnt /bin/bash <<'CHROOT_END'
 set -e
 
 echo "Installing GRUB to EFI..."
@@ -671,12 +671,12 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "GRUB installation completed"
 CHROOT_END
 
-if [[ $? -ne 0 ]]; then
-	log_error "GRUB installation failed"
-	exit 1
-fi
+	if [[ $? -ne 0 ]]; then
+		log_error "GRUB installation failed"
+		exit 1
+	fi
 
-log_info "GRUB installed successfully"
+	log_info "GRUB installed successfully"
 }
 
 setup_dotfiles() {
@@ -703,12 +703,12 @@ popd
 echo "Dotfiles setup completed"
 CHROOT_END
 
-if [[ $? -ne 0 ]]; then
-	log_error "Dotfiles setup failed"
-	exit 1
-fi
+	if [[ $? -ne 0 ]]; then
+		log_error "Dotfiles setup failed"
+		exit 1
+	fi
 
-log_info "Dotfiles installed successfully"
+	log_info "Dotfiles installed successfully"
 }
 
 cleanup() {
@@ -727,7 +727,7 @@ setup_nix() {
 	log_info "Setting up Nix..."
 	
 	if [ -d "/mnt/home/$USER_NAME/Public/Dotfiles" ]; then
-		cat > /mnt/etc/nix/nix.conf <<EOF
+		cat > /mnt/etc/nix/nix.conf <<'EOF'
 build-users-group = nixbld
 build-use-sandbox = true
 use-xdg-base-directories = true
@@ -735,22 +735,22 @@ connect-timeout = 60000
 experimental-features = nix-command flakes
 EOF
 
-		[ -e "/mnt/etc/nix/nix.conf" ] && cat /mnt/etc/nix/nix.conf
+	[ -e "/mnt/etc/nix/nix.conf" ] && cat /mnt/etc/nix/nix.conf
 
-		if [ -e "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" ]; then
-			cp "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" /mnt/etc/profile.d/nix.sh
-		else
-			log_warn "nix.sh not found in dotfiles"
-		fi
+	if [ -e "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" ]; then
+		cp "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" /mnt/etc/profile.d/nix.sh
+	else
+		log_warn "nix.sh not found in dotfiles"
+	fi
 
-		if [[ -d /mnt/etc/sv/nix-daemon ]]; then
-			log_debug "Enabling service: nix-daemon"
+	if [[ -d /mnt/etc/sv/nix-daemon ]]; then
+		log_debug "Enabling service: nix-daemon"
 			ln -sf /etc/sv/nix-daemon /mnt/etc/runit/runsvdir/default/ || {
 				log_warn "Failed to enable service: nix-daemon"
 			}
-		else
-			log_warn "Service directory not found: nix-daemon"
-		fi
+	else
+		log_warn "Service directory not found: nix-daemon"
+	fi
 	else
 		log_warn "Dotfiles directory not found, skipping Nix setup"
 	fi
