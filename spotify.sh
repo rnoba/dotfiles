@@ -15,6 +15,7 @@ log_error() { printf "%b[ERROR]%b %s\n" "$RED" "$NC" "$1"; }
 readonly LIB_DIR=$HOME/Public/Lib
 readonly BIN_DIR=$HOME/.local/bin
 
+if ! command -v nix >/dev/null 2>&1; then log_error "Nix not installed"; exit 1; fi
 if [ ! -d "$LIB_DIR" ]; then log_error "No Lib directory ($LIB_DIR)."; exit 1; fi
 if [ ! -d "$BIN_DIR" ]; then log_error "Bin directory ($BIN_DIR) does not exist."; exit 1; fi
 
@@ -27,7 +28,6 @@ pushd "$HOME/Public/Lib/"
 
 	if [ ! -e ./config.toml ]; then log_error "Could not find config.toml"; exit 1; fi
 	if [ ! -e ./target/release/libspotifyadblock.so ]; then log_error "Could not find libspotifyadblock.so"; exit 1; fi
-	if ! command -v nix >/dev/null 2>&1; then log_error "Nix not installed"; exit 1; fi
 
 	cat > "./setup.nix" <<'EOF'
 { pkgs ? import <nixpkgs> {} }:
