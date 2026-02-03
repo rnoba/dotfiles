@@ -21,6 +21,7 @@ if [ ! -d "$BIN_DIR" ]; then log_error "Bin directory ($BIN_DIR) does not exist.
 pushd "$HOME/Public/Lib/"
 	if [ ! -d ./SpotifyAdBlock ]; then
 		log_error "SpotifyAdBlock must be cloned & builded manually (https://github.com/abba23/spotify-adblock as of 02/03/2026)"
+		log_info "git clone https://github.com/abba23/spotify-adblock.git SpotifyAdBlock"
 		exit 1
 	fi
 
