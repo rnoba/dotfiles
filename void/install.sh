@@ -769,12 +769,34 @@ setup_xorg_conf() {
 	fi
 }
 
+polkit_allow_wheel_filesystem_mount() {
+	mkdir -p /mnt/etc/polkit-1/rules.d
+	log_info "Polkit udisk rule"
+
+	cat > /mnt/etc/polkit-1/rules.d/10-udisks2-wheel.rules <<'EOF'
+// Allow members of the wheel group to perform udisks2 actions (mount, unmount, eject)
+// without authentication. This enables Thunar/gvfs to mount external drives silently.
+
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.udisks2.filesystem-mount" ||
+        action.id == "org.freedesktop.udisks2.filesystem-mount-system" ||
+        action.id == "org.freedesktop.udisks2.filesystem-unmount" ||
+        action.id == "org.freedesktop.udisks2.eject-media" ||
+        action.id == "org.freedesktop.udisks2.power-off-drive") {
+
+        if (subject.isInGroup("wheel")) {
+            return polkit.Result.YES;
+        }
+    }
+});
+EOF
+
+}
+
 setup_firefox() {
-    log_info "Configuring Firefox with XDG support..."
-    
-    mkdir -p /mnt/etc/firefox/policies
-    
-    cat > /mnt/etc/firefox/policies/policies.json <<'EOF'
+	log_info "Configuring Firefox with XDG support..."
+	mkdir -p /mnt/etc/firefox/policies
+	cat > /mnt/etc/firefox/policies/policies.json <<'EOF'
 {
 	"policies": {
 		"SearchEngines": {
@@ -818,7 +840,7 @@ setup_firefox() {
 }
 EOF
     
-    log_info "Firefox policies configured at /etc/firefox/policies/policies.json"
+	log_info "Firefox policies configured at /etc/firefox/policies/policies.json"
 }
 
 show_summary() {
@@ -929,6 +951,10 @@ main() {
 
 	log_info "=== FIREFOX POLICIES ==="
 	setup_firefox
+	echo
+
+	log_info "=== COFING ==="
+  polkit_allow_wheel_filesystem_mount
 	echo
 
 	log_info "=== CLEANUP ==="
