@@ -44,7 +44,7 @@ readonly PACKAGES=(
 	p7zip unzip
 
 	# User applications
-	exa xdg-user-dirs speech-dispatcher pavucontrol alacritty zsh tmux i3 i3blocks dmenu firefox mpv neovim flameshot
+	exa nix xdg-user-dirs speech-dispatcher pavucontrol alacritty zsh tmux i3 i3blocks dmenu firefox mpv neovim flameshot
 
 	# Development tools
 	base-devel gcc clang git curl direnv
@@ -450,6 +450,72 @@ EOF
 log_info "DNS configuration completed"
 }
 
+configure_nftables() {
+	log_info "Configuring nftables firewall..."
+	
+	cat > /mnt/etc/nftables.conf <<'EOF'
+#!/usr/sbin/nft -f
+
+# Clear any existing rules
+flush ruleset
+
+# Main filter table (handles both IPv4 and IPv6)
+table inet filter {
+	# Input chain - incoming traffic
+	chain input {
+		type filter hook input priority filter; policy drop;
+		
+		# Accept loopback traffic (localhost)
+		iif lo accept
+		
+		# Accept established/related connections (stateful)
+		# This allows responses to YOUR outgoing connections (web browsing, etc.)
+		ct state established,related accept
+		
+		# Drop invalid packets
+		ct state invalid drop
+		
+		# Accept ICMPv6 (required for IPv6 to function)
+		ip6 nexthdr icmpv6 icmpv6 type {
+			destination-unreachable,
+			packet-too-big,
+			time-exceeded,
+			parameter-problem,
+			echo-request,
+			echo-reply,
+			nd-router-advert,
+			nd-neighbor-solicit,
+			nd-neighbor-advert
+		} accept
+		
+		# Accept ICMP ping (so you can ping your own PC from other devices)
+		ip protocol icmp icmp type echo-request accept
+		
+		# Allow DHCP client responses from local network
+		ip protocol udp udp sport 67 udp dport 68 accept
+		
+		# Optional: Allow local network access (uncomment if needed)
+		# Useful for file sharing, SSH from other home devices, etc.
+		# ip saddr 192.168.0.0/16 accept
+		# ip saddr 10.0.0.0/8 accept
+	}
+	
+	# Output chain - outgoing traffic
+	chain output {
+		type filter hook output priority filter; policy accept;
+		
+		# Allow all outgoing traffic (web browsing, gaming, downloads, etc.)
+	}
+	
+	chain forward {
+		type filter hook forward priority filter; policy drop;
+	}
+}
+EOF
+	
+	log_info "nftables configuration created at /etc/nftables.conf"
+}
+
 enable_services() {
 	log_info "Enabling system services..."
 
@@ -512,7 +578,7 @@ log_info "zram configuration completed"
 chroot_reconfigure() {
 	log_info "Reconfiguring packages in chroot..."
 
-	xchroot /mnt /bin/bash <<'CHROOT_END'
+	xchroot /mnt /bin/bash <<CHROOT_END
 set -e
 
 echo "Generating locales..."
@@ -535,7 +601,7 @@ log_info "Package reconfiguration completed"
 set_root_password() {
 	log_info "Setting root password..."
 
-	xchroot /mnt /bin/bash <<'CHROOT_END'
+	xchroot /mnt /bin/bash <<CHROOT_END
 set -e
 
 if [[ ! -f /etc/shadow ]]; then
@@ -593,7 +659,7 @@ log_info "User '$USER_NAME' created with password: $USER_PASSWORD"
 install_bootloader() {
 	log_info "Installing GRUB bootloader..."
 
-	xchroot /mnt /bin/bash <<'CHROOT_END'
+	xchroot /mnt /bin/bash <<CHROOT_END
 set -e
 
 echo "Installing GRUB to EFI..."
@@ -630,7 +696,7 @@ chown -R $USER_NAME:$USER_NAME "\$DEST_DIR"
 pushd "\$DEST_DIR"
 sudo -u $USER_NAME git clone "\$REPO" Dotfiles
 pushd ./Dotfiles
-sudo -u $USER_NAME bash ./install.sh
+sudo -u $USER_NAME bash ./setup.sh
 popd
 popd
 
@@ -655,6 +721,52 @@ cleanup() {
 	umount -R /mnt 2>/dev/null || true
 
 	log_info "Cleanup completed"
+}
+
+setup_nix() {
+	log_info "Setting up Nix..."
+	
+	if [ -d "/mnt/home/$USER_NAME/Public/Dotfiles" ]; then
+		cat > /mnt/etc/nix/nix.conf <<EOF
+build-users-group = nixbld
+build-use-sandbox = true
+use-xdg-base-directories = true
+connect-timeout = 60000
+experimental-features = nix-command flakes
+EOF
+
+		[ -e "/mnt/etc/nix/nix.conf" ] && cat /mnt/etc/nix/nix.conf
+
+		if [ -e "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" ]; then
+			cp "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" /mnt/etc/profile.d/nix.sh
+		else
+			log_warn "nix.sh not found in dotfiles"
+		fi
+
+		if [[ -d /mnt/etc/sv/nix-daemon ]]; then
+			log_debug "Enabling service: nix-daemon"
+			ln -sf /etc/sv/nix-daemon /mnt/etc/runit/runsvdir/default/ || {
+				log_warn "Failed to enable service: nix-daemon"
+			}
+		else
+			log_warn "Service directory not found: nix-daemon"
+		fi
+	else
+		log_warn "Dotfiles directory not found, skipping Nix setup"
+	fi
+}
+
+setup_xorg_conf() {
+	if [ -d "/mnt/home/$USER_NAME/Public/Dotfiles" ]; then
+		if [ -e "/mnt/home/$USER_NAME/Public/Dotfiles/xorg.conf" ]; then
+			cp "/mnt/home/$USER_NAME/Public/Dotfiles/xorg.conf" /mnt/etc/X11/xorg.conf
+			log_info "Xorg configuration copied"
+		else
+			log_warn "xorg.conf not found in dotfiles"
+		fi
+	else
+		log_warn "Dotfiles directory not found, skipping xorg.conf"
+	fi
 }
 
 show_summary() {
@@ -740,6 +852,7 @@ main() {
 	generate_fstab
 	configure_dracut
 	configure_dns
+	configure_nftables
 	enable_services
 	configure_pipewire
 	configure_zram
@@ -754,6 +867,13 @@ main() {
 
 	log_info "=== DOTFILES ==="
 	setup_dotfiles
+	echo
+
+	log_info "=== NIX ==="
+	setup_nix
+
+	log_info "=== COPYING XORG CONFIG FILE ==="
+	setup_xorg_conf
 	echo
 
 	log_info "=== CLEANUP ==="
