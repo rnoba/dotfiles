@@ -769,6 +769,58 @@ setup_xorg_conf() {
 	fi
 }
 
+setup_firefox() {
+    log_info "Configuring Firefox with XDG support..."
+    
+    mkdir -p /mnt/etc/firefox/policies
+    
+    cat > /mnt/etc/firefox/policies/policies.json <<'EOF'
+{
+	"policies": {
+		"SearchEngines": {
+			"Default": "DuckDuckGo",
+			"Remove": ["Google", "Bing", "Amazon.com", "eBay"]
+		},
+	
+		"Extensions": {
+			"Install": [
+				"https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi",
+				"https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi",
+				"https://addons.mozilla.org/firefox/downloads/latest/multi-account-containers/latest.xpi"
+			]
+		},
+	
+		"DisableTelemetry": true,
+		"DisablePocket": true,
+		"OfferToSaveLogins": false,
+	
+		"Preferences": {
+			"browser.startup.homepage": {
+				"Value": "about:blank",
+				"Status": "default"
+			},
+			"privacy.donottrackheader.enabled": {
+				"Value": true,
+				"Status": "locked"
+			}
+		},
+	
+		"FirefoxHome": {
+			"Search": true,
+			"TopSites": false,
+			"SponsoredTopSites": false,
+			"Highlights": false,
+			"Pocket": false,
+			"SponsoredPocket": false,
+			"Snippets": false
+		}
+	}
+}
+EOF
+    
+    log_info "Firefox policies configured at /etc/firefox/policies/policies.json"
+}
+
 show_summary() {
 	echo
 	echo "════════════════════════════════════════════════════════════════"
@@ -874,6 +926,9 @@ main() {
 
 	log_info "=== COPYING XORG CONFIG FILE ==="
 	setup_xorg_conf
+
+	log_info "=== FIREFOX POLICIES ==="
+	setup_firefox
 	echo
 
 	log_info "=== CLEANUP ==="

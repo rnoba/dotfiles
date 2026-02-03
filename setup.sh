@@ -16,11 +16,15 @@ readonly DOTFILES_DIR="./config"
 readonly CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-# Stupid programs that does not respect XDG directory specs create those at $HOME
-# It seems that mozilla creates 'mozilla' dir at $XDG_CONFIG_HOME now
+# It seems that firefox respects XDG specs now
 # readonly MOZILLA_HOME="$DATA_HOME/mozilla"
 
+# Stupid programs that does not respect XDG directory specs
+# .pki - Normally created by Chromium
+# https://chromium.googlesource.com/chromium/src/base/+/535b6a8e45ea7b23343488f2abd8068c1cc7548b/nss_init.cc
 readonly PKI_HOME="$DATA_HOME/pki"
+
+#
 readonly NV_HOME="$DATA_HOME/nv"
 
 log_info() { printf "%b[INFO]%b %s\n" "$GREEN" "$NC" "$1"; }
@@ -60,7 +64,7 @@ safe_link() {
 main() {
 	log_info "Starting..."
 	mkdir -p "$CONFIG_HOME" "$DATA_HOME"
-	# mkdir -p "$MOZILLA_HOME" "$PKI_HOME" "$NV_HOME"
+	mkdir -p "$PKI_HOME" "$NV_HOME"
 	
 	log_info "Copying dotfiles..."
 
@@ -79,25 +83,18 @@ main() {
 	safe_copy "$DOTFILES_DIR/i3blocks" "$CONFIG_HOME/i3blocks"
 	safe_copy "$DOTFILES_DIR/mozilla" "$CONFIG_HOME/mozilla"
 	
-	# log_info "Cleaning HOME..."
-	# if [[ -d "$HOME/.mozilla" && ! -e "$MOZILLA_HOME" ]]; then
-	# 	log_warn "Existing ~/.mozilla found, moving to XDG_DATA_HOME"
-	# 	mv "$HOME/.mozilla" "$MOZILLA_HOME"
-	# fi
-	#
-	# if [[ -d "$HOME/.pki" && ! -e "$PKI_HOME" ]]; then
-	# 	log_warn "Existing ~/.pki found, moving to XDG_DATA_HOME"
-	# 	mv "$HOME/.pki" "$PKI_HOME"
-	# fi
-	#
-	# if [[ -d "$HOME/.nv" && ! -e "$NV_HOME" ]]; then
-	# 	log_warn "Existing ~/.nv found, moving to XDG_DATA_HOME"
-	# 	mv "$HOME/.nv" "$NV_HOME"
-	# fi
-	#
-	# safe_link "$MOZILLA_HOME" "$HOME/.mozilla"
-	# safe_link "$PKI_HOME" "$HOME/.pki"
-	# safe_link "$NV_HOME" "$HOME/.nv"
+	if [[ -d "$HOME/.pki" && ! -e "$PKI_HOME" ]]; then
+		log_warn "Existing ~/.pki found, moving to XDG_DATA_HOME"
+		mv "$HOME/.pki" "$PKI_HOME"
+	fi
+
+	if [[ -d "$HOME/.nv" && ! -e "$NV_HOME" ]]; then
+		log_warn "Existing ~/.nv found, moving to XDG_DATA_HOME"
+		mv "$HOME/.nv" "$NV_HOME"
+	fi
+
+	safe_link "$PKI_HOME" "$HOME/.pki"
+	safe_link "$NV_HOME" "$HOME/.nv"
 	
 	log_info "Configuring SSH..."
 
