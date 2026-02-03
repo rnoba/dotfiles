@@ -44,7 +44,7 @@ readonly PACKAGES=(
 	p7zip unzip
 
 	# User applications
-	exa nix fzf Thunar xdg-user-dirs speech-dispatcher pavucontrol alacritty zsh tmux i3 i3blocks dmenu firefox feh mpv neovim flameshot
+	exa nix fzf thunar-volman Thunar xdg-user-dirs speech-dispatcher pavucontrol alacritty zsh tmux i3 i3blocks dmenu firefox feh mpv neovim flameshot
 
 	# Development tools
 	base-devel gcc clang git curl direnv
