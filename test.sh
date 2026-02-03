@@ -35,7 +35,7 @@ readonly PACKAGES=(
 	NetworkManager network-manager-applet dhcpcd openresolv
 	
 	# System services - elogind provides XDG_RUNTIME_DIR and device access
-	dbus elogind nftables
+	dbus elogind nftables polkit
 	
 	# Audio - PipeWire with WirePlumber session manager
 	pipewire wireplumber
