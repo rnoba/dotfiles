@@ -63,7 +63,7 @@ safe_link() {
 
 main() {
 	log_info "Starting..."
-	mkdir -p "$CONFIG_HOME" "$DATA_HOME"
+	mkdir -p "$CONFIG_HOME" "$DATA_HOME" "$HOME/.local/bin"
 	mkdir -p "$PKI_HOME" "$NV_HOME"
 	
 	log_info "Copying dotfiles..."
