@@ -27,8 +27,8 @@ function tmux_sessionizer() { tmux-sessionizer; zle redisplay; }
 zle -N tmux_sessionizer
 bindkey '^f' tmux_sessionizer
 
-source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh"
-source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"
+source "$HOME/.config/zsh/plugins/vendor/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh"
+source "$HOME/.config/zsh/plugins/vendor/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=magenta,bold,underline"
 
 eval "$(direnv hook zsh)"
