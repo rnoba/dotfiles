@@ -20,7 +20,7 @@ readonly DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 # readonly MOZILLA_HOME="$DATA_HOME/mozilla"
 
 # Stupid programs that does not respect XDG directory specs
-# .pki - Normally created by Chromium
+# $HOME/.pki - Normally created by Chromium
 # https://chromium.googlesource.com/chromium/src/base/+/535b6a8e45ea7b23343488f2abd8068c1cc7548b/nss_init.cc
 readonly PKI_HOME="$DATA_HOME/pki"
 
@@ -114,7 +114,8 @@ main() {
 		log_warn "SSH key already exists at ~/.ssh/id_ed25519"
 	fi
 	
-	mkdir -p "$HOME/Public/Garbage" "$HOME/Downloads" "$HOME/Documents" "$HOME/Pictures"
+	mkdir -p "$HOME/Public/Garbage" "$HOME/Public/Lib" "$HOME/Public/Code" "$HOME/Public/Apps" "$HOME/Downloads" "$HOME/Documents" "$HOME/Pictures" "$HOME/Lodge"
+
 	cat > "$HOME/.config/user-dirs.dirs" <<'EOF'
 XDG_DOWNLOAD_DIR="$HOME/Downloads"
 XDG_PUBLICSHARE_DIR="$HOME/Public"
