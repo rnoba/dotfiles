@@ -32,9 +32,9 @@ vim.o.inccommand = "split"
 
 vim.o.scrolloff = 10
 
-vim.api.nvim_set_option("clipboard", "unnamed")
+vim.opt.clipboard = "unnamed"
 
-vim.keymap.set('v', '<leader>y', '"+y<CR>', { silent = true, noremap = true })
+vim.keymap.set('v', '<leader>y', '"+y', { silent = true })
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
@@ -81,7 +81,7 @@ require("lazy").setup({
 				end,
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
-			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
+			{ "nvim-tree/nvim-web-devicons",            enabled = vim.g.have_nerd_font },
 		},
 		config = function()
 			require("telescope").setup({
@@ -160,15 +160,15 @@ require("lazy").setup({
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if
-						client
-						and client_supports_method(
-							client,
-							vim.lsp.protocol.Methods.textDocument_documentHighlight,
-							event.buf
-						)
+							client
+							and client_supports_method(
+								client,
+								vim.lsp.protocol.Methods.textDocument_documentHighlight,
+								event.buf
+							)
 					then
 						local highlight_augroup =
-						vim.api.nvim_create_augroup("rnoba-lsp-highlight", { clear = false })
+								vim.api.nvim_create_augroup("rnoba-lsp-highlight", { clear = false })
 
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 							buffer = event.buf,
@@ -192,8 +192,8 @@ require("lazy").setup({
 					end
 
 					if
-						client
-						and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
+							client
+							and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
 					then
 						map("<leader>th", function()
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
@@ -209,7 +209,7 @@ require("lazy").setup({
 				signs = vim.g.have_nerd_font and {
 					text = {
 						[vim.diagnostic.severity.ERROR] = "󰅚 ",
-						-- [vim.diagnostic.severity.WARN] = "󰀪 ",
+						[vim.diagnostic.severity.WARN] = "󰀪 ",
 						[vim.diagnostic.severity.INFO] = "󰋽 ",
 						[vim.diagnostic.severity.HINT] = "󰌶 ",
 					},
@@ -220,7 +220,7 @@ require("lazy").setup({
 					format = function(diagnostic)
 						local diagnostic_message = {
 							[vim.diagnostic.severity.ERROR] = diagnostic.message,
-							-- [vim.diagnostic.severity.WARN] = diagnostic.message,
+							[vim.diagnostic.severity.WARN] = diagnostic.message,
 							[vim.diagnostic.severity.INFO] = diagnostic.message,
 							[vim.diagnostic.severity.HINT] = diagnostic.message,
 						}
@@ -236,12 +236,12 @@ require("lazy").setup({
 				ts_ls = {
 					cmd = { "bunx", "typescript-language-server", "--stdio" },
 				},
-				prismals = {},
 				clangd = {},
-				tailwindcss = {},
-				gopls = {},
-				svelte = {},
-				pyright = {},
+				-- prismals = {},
+				-- tailwindcss = {},
+				-- gopls = {},
+				-- svelte = {},
+				-- pyright = {},
 				lua_ls = {
 					settings = {
 						Lua = {
@@ -255,12 +255,11 @@ require("lazy").setup({
 
 			local servers_to_setup = vim.tbl_keys(servers or {})
 
-			local lspconfig = require('lspconfig')
-
 			setup = function(server_name)
 				local server = servers[server_name] or {}
 				server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-				lspconfig[server_name].setup(server)
+				vim.lsp.config(server_name, server)
+				vim.lsp.enable(server_name)
 			end
 
 			for _, server in ipairs(servers_to_setup) do
@@ -311,8 +310,8 @@ require("lazy").setup({
 					{ name = "copilot", group_index = 2 },
 					{ name = 'nvim_lsp' },
 				}, {
-						{ name = 'buffer' },
-					})
+					{ name = 'buffer' },
+				})
 			}
 		end,
 	},
@@ -377,28 +376,6 @@ require("lazy").setup({
 			},
 		},
 	},
-	-- {
-	-- 	"github/copilot.vim",
-	-- 	init = function()
-	-- 		vim.keymap.set("n", "<leader>co", function()
-	-- 			vim.cmd("Copilot disable")
-	-- 			vim.notify("Copilot disabled", vim.log.levels.INFO)
-	-- 		end, {
-	-- 				noremap = true,
-	-- 				silent = true,
-	-- 				desc = "Disable Copilot",
-	-- 			})
-	--
-	-- 		vim.keymap.set("n", "<leader>ce", function()
-	-- 			vim.cmd("Copilot enable")
-	-- 			vim.notify("Copilot enabled", vim.log.levels.INFO)
-	-- 		end, {
-	-- 				noremap = true,
-	-- 				silent = true,
-	-- 				desc = "Enable Copilot",
-	-- 			})
-	-- 	end,
-	-- },
 	{
 		"mbbill/undotree",
 		init = function()
@@ -408,46 +385,23 @@ require("lazy").setup({
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
-		main = "nvim-treesitter.configs",
-		opts = {
-			ensure_installed = {
-				"bash",
-				"c",
-				"diff",
-				"html",
-				"lua",
-				"luadoc",
-				"markdown",
-				"markdown_inline",
-				"query",
-				"vim",
-				"vimdoc",
-			},
-			auto_install = true,
-			highlight = {
-				enable = true,
-				additional_vim_regex_highlighting = { "ruby" },
-			},
-			indent = { enable = true, disable = { "ruby" } },
+	},
+}, {
+	ui = {
+		icons = vim.g.have_nerd_font and {} or {
+			cmd = "⌘",
+			config = "🛠",
+			event = "📅",
+			ft = "📂",
+			init = "⚙",
+			keys = "🗝",
+			plugin = "🔌",
+			runtime = "💻",
+			require = "🌙",
+			source = "📄",
+			start = "🚀",
+			task = "📌",
+			lazy = "💤 ",
 		},
 	},
-
-}, {
-		ui = {
-			icons = vim.g.have_nerd_font and {} or {
-				cmd = "⌘",
-				config = "🛠",
-				event = "📅",
-				ft = "📂",
-				init = "⚙",
-				keys = "🗝",
-				plugin = "🔌",
-				runtime = "💻",
-				require = "🌙",
-				source = "📄",
-				start = "🚀",
-				task = "📌",
-				lazy = "💤 ",
-			},
-		},
-	})
+})
