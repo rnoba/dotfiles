@@ -41,3 +41,31 @@ export N_PREFIX="$JUNK_PATH/N_node"
 export __GL_SHADER_DISK_CACHE_PATH="$JUNK_PATH"
 
 export NIXPKGS_ALLOW_UNFREE=1
+export EXA_COLORS="\
+uu=38;5;246:\
+gu=38;5;246:\
+sn=38;5;246:\
+sb=38;5;246:\
+da=38;5;240:\
+ur=38;5;246:\
+uw=38;5;246:\
+ux=38;5;246:\
+ue=38;5;246:\
+gr=38;5;246:\
+gw=38;5;246:\
+gx=38;5;246:\
+tr=38;5;246:\
+tw=38;5;246:\
+tx=38;5;246:\
+fi=38;5;249:\
+di=38;5;212:\
+ex=38;5;212:\
+*.png=38;5;177:\
+*.jpg=38;5;177:\
+*.gif=38;5;177:\
+*.mp4=38;5;177:\
+*.mkv=38;5;177:\
+ln=38;5;141:\
+or=38;5;196"
+
+# . "/home/rnoba/.local/share/rust/env"
