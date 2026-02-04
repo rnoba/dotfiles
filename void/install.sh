@@ -821,10 +821,6 @@ setup_firefox() {
 			"browser.startup.homepage": {
 				"Value": "about:blank",
 				"Status": "default"
-			},
-			"privacy.donottrackheader.enabled": {
-				"Value": true,
-				"Status": "locked"
 			}
 		},
 	
