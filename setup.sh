@@ -82,6 +82,7 @@ main() {
 	safe_copy "$DOTFILES_DIR/i3" "$CONFIG_HOME/i3"
 	safe_copy "$DOTFILES_DIR/i3blocks" "$CONFIG_HOME/i3blocks"
 	safe_copy "$DOTFILES_DIR/mozilla" "$CONFIG_HOME/mozilla"
+	safe_copy "$DOTFILES_DIR/tmux-sessionizer" "$CONFIG_HOME/tmux-sessionizer"
 	
 	if [[ -d "$HOME/.pki" && ! -e "$PKI_HOME" ]]; then
 		log_warn "Existing ~/.pki found, moving to XDG_DATA_HOME"
