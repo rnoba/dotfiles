@@ -47,7 +47,7 @@ readonly PACKAGES=(
 	fd luarocks rustup exa nix fzf gvfs thunar-volman Thunar xdg-user-dirs speech-dispatcher pavucontrol alacritty zsh tmux i3 i3blocks dmenu firefox feh mpv neovim flameshot
 
 	# Development tools
-	base-devel gcc clang git curl direnv
+	base-devel gcc clang git curl direnv cmake
 
 	# Fonts
 	noto-fonts-ttf noto-fonts-cjk noto-fonts-emoji nerd-fonts
