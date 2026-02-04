@@ -46,6 +46,9 @@ readonly PACKAGES=(
 	# User applications
 	fd luarocks rustup exa nix fzf gvfs thunar-volman Thunar xdg-user-dirs speech-dispatcher pavucontrol alacritty zsh tmux i3 i3blocks dmenu firefox feh mpv neovim flameshot
 
+	#
+	nvidia-vaapi-driver libva libva-utils mesa-vaapi
+
 	# Development tools
 	base-devel gcc clang git curl direnv cmake
 
