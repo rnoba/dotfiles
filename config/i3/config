@@ -17,13 +17,31 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute				 exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute		 exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
+set $inactive-text-color     #8a8a8a
+set $inactive-bg-color       #141416
+set $urgent-bg-color         #ff5c8a
+set $text-color              #ff79c6
+set $bg-color                #0f0f10
+set $inactive-text-bar-color #8a8a8a
+set $inactive-bg-bar-color   #141416
+set $urgent-bg-bar-color     #ff5c8a
+set $text-bar-color          #ff66b2
+set $bg-bar-color            #0f0f10
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 tiling_drag modifier titlebar
 
 bindsym $mod+Return exec alacritty 
 bindsym $mod+o		  exec flameshot launcher 
-bindsym $mod+d			exec --no-startup-id dmenu_run
+
+bindsym $mod+d exec dmenu_run \
+    -fn 'monospace-10' \
+    -nb '$bg-bar-color' \
+    -nf '$inactive-text-bar-color' \
+    -sb '$bg-bar-color' \
+    -sf '$text-bar-color' \
+		-l 4
 
 bindsym $mod+Shift+q kill
 
@@ -114,18 +132,6 @@ for_window [class="pomatez"]		 floating enable
 
 default_border pixel 0
 gaps outer 0
-
-set $inactive-text-color     #8a8a8a
-set $inactive-bg-color       #141416
-set $urgent-bg-color         #ff5c8a
-set $text-color              #ff79c6
-set $bg-color                #0f0f10
-set $inactive-text-bar-color #8a8a8a
-set $inactive-bg-bar-color   #141416
-set $urgent-bg-bar-color     #ff5c8a
-set $text-bar-color          #ff66b2
-set $bg-bar-color            #0f0f10
-
 
 client.focused          $bg-bar-color    $bg-bar-color    $text-bar-color					 $bg-bar-color			 $bg-bar-color
 client.unfocused        $bg-bar-color    $bg-bar-color    $inactive-text-bar-color $bg-bar-color			 $bg-bar-color
