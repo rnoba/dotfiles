@@ -815,6 +815,7 @@ setup_firefox() {
 		"DisableTelemetry": true,
 		"DisablePocket": true,
 		"OfferToSaveLogins": false,
+		"PromptForDownloadLocation": true,
 	
 		"Preferences": {
 			"browser.startup.homepage": {
