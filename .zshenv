@@ -6,7 +6,7 @@ export PYTHON_HISTORY="$HOME/.local/share/python/history"
 export EDITOR=nvim
 export ARCH=x86_64
 export ARCHFLAGS="-arch $ARCH"
-#export XCURSOR_PATH="${XCURSOR_PATH}:$HOME/.local/share/icons"
+export XCURSOR_PATH="${XCURSOR_PATH:-$HOME/.local/share/icons}"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.local/cache"
@@ -41,6 +41,7 @@ export N_PREFIX="$JUNK_PATH/N_node"
 export __GL_SHADER_DISK_CACHE_PATH="$JUNK_PATH"
 
 export NIXPKGS_ALLOW_UNFREE=1
+
 export EXA_COLORS="\
 uu=38;5;246:\
 gu=38;5;246:\
@@ -58,7 +59,7 @@ tr=38;5;246:\
 tw=38;5;246:\
 tx=38;5;246:\
 fi=38;5;249:\
-di=38;5;212:\
+di=38;5;147:\
 ex=38;5;212:\
 *.png=38;5;177:\
 *.jpg=38;5;177:\
@@ -67,5 +68,8 @@ ex=38;5;212:\
 *.mkv=38;5;177:\
 ln=38;5;141:\
 or=38;5;196"
+
+export LIBVA_DRIVER_NAME=nvidia
+export NVD_BACKEND=direct
 
 # . "/home/rnoba/.local/share/rust/env"
