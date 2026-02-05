@@ -83,6 +83,7 @@ main() {
 	safe_copy "$DOTFILES_DIR/i3blocks" "$CONFIG_HOME/i3blocks"
 	safe_copy "$DOTFILES_DIR/mozilla" "$CONFIG_HOME/mozilla"
 	safe_copy "$DOTFILES_DIR/tmux-sessionizer" "$CONFIG_HOME/tmux-sessionizer"
+	safe_copy "$DOTFILES_DIR/X11" "$CONFIG_HOME/X11"
 	
 	if [[ -d "$HOME/.pki" && ! -e "$PKI_HOME" ]]; then
 		log_warn "Existing ~/.pki found, moving to XDG_DATA_HOME"
@@ -127,9 +128,6 @@ XDG_VIDEOS_DIR="$HOME/Public/Garbage"
 XDG_TEMPLATES_DIR="$HOME/Public/Garbage"
 XDG_DESKTOP_DIR="$HOME/Public/Garbage"
 EOF
-# 	cat > "$HOME/.config/user-dirs.conf" <<'EOF'
-# enabled=False
-# EOF
 
 	xdg-user-dirs-update
 
