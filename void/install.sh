@@ -796,6 +796,34 @@ EOF
 
 }
 
+setup_grub_cfg() {
+	log_info "Grub config..."
+	cat > /mnt/etc/default/grub <<'EOF'
+#
+# Configuration file for GRUB.
+#
+GRUB_DEFAULT=0
+#GRUB_HIDDEN_TIMEOUT=0
+#GRUB_HIDDEN_TIMEOUT_QUIET=false
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="Void"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 textrd.driver.blacklist=nouveau modprobe.blacklist=nouveau nvidia_drm.modeset=1"
+GRUB_DISABLE_OS_PROBER=false
+# Uncomment to use basic console
+#GRUB_TERMINAL_INPUT="console"
+# Uncomment to disable graphical terminal
+#GRUB_TERMINAL_OUTPUT=console
+#GRUB_BACKGROUND=/usr/share/void-artwork/splash.png
+#GRUB_GFXMODE=1920x1080x32
+#GRUB_DISABLE_LINUX_UUID=true
+#GRUB_DISABLE_RECOVERY=true
+# Uncomment and set to the desired menu colors.  Used by normal and wallpaper
+# modes only.  Entries specified as foreground/background.
+#GRUB_COLOR_NORMAL="light-blue/black"
+#GRUB_COLOR_HIGHLIGHT="light-cyan/blue"
+EOF
+}
+
 setup_firefox() {
 	log_info "Configuring Firefox with XDG support..."
 	mkdir -p /mnt/etc/firefox/policies
@@ -955,6 +983,7 @@ main() {
 
 	log_info "=== COFING ==="
   polkit_allow_wheel_filesystem_mount
+	setup_grub_cfg
 	echo
 
 	log_info "=== CLEANUP ==="
