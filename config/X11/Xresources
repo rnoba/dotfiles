@@ -1,0 +1,44 @@
+! Terminal colors (for alacritty, xterm, etc.)
+*.foreground:   #e0e0e0
+*.background:   #0f0f10
+*.cursorColor:  #ff79c6
+
+! Black
+*.color0:       #1e1e1e
+*.color8:       #5a5a5a
+
+! Red
+*.color1:       #ff5c8a
+*.color9:       #ff7aa2
+
+! Green
+*.color2:       #50fa7b
+*.color10:      #69ff94
+
+! Yellow
+*.color3:       #f1fa8c
+*.color11:      #ffffa5
+
+! Blue
+*.color4:       #8be9fd
+*.color12:      #92f0ff
+
+! Magenta
+*.color5:       #ff79c6
+*.color13:      #ff92df
+
+! Cyan
+*.color6:       #8be9fd
+*.color14:      #a4ffff
+
+! White
+*.color7:       #e0e0e0
+*.color15:      #ffffff
+
+! Font settings
+Xft.dpi:        96
+Xft.antialias:  true
+Xft.hinting:    true
+Xft.rgba:       rgb
+Xft.hintstyle:  hintfull
+Xft.lcdfilter:  lcddefault
