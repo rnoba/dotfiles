@@ -64,18 +64,18 @@ safe_link() {
 
 main() {
 	log_info "Starting..."
+	safe_copy "./.zshenv" "$HOME/.zshenv"
+	if [[ -e "$HOME/.zshenv" ]]; then
+		source "$HOME/.zshenv"
+	fi
+
 	mkdir -p "$CONFIG_HOME" "$DATA_HOME" "$STATE_HOME" "$HOME/.local/bin"
 	mkdir -p "$STATE_HOME/history"
 	mkdir -p "$PKI_HOME" "$NV_HOME"
 	
 	log_info "Copying dotfiles..."
 
-	safe_copy "./.zshenv" "$HOME/.zshenv"
 	safe_copy "./.Xsession" "$HOME/.Xsession"
-
-	if [[ -e "$HOME/.zshenv" ]]; then
-		source "$HOME/.zshenv"
-	fi
 
 	safe_copy "$DOTFILES_DIR/zsh" "$CONFIG_HOME/zsh"
 	safe_copy "$DOTFILES_DIR/alacritty" "$CONFIG_HOME/alacritty"
