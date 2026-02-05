@@ -1,6 +1,4 @@
-export ZDOTDIR="$HOME/.config/zsh/"
-export HISTFILE="$HOME/.local/share/histfile"
-export PYTHON_HISTORY="$HOME/.local/share/python/history"
+export ZDOTDIR="$HOME/.config/zsh"
 
 # export SSLKEYLOGFILE="$HOME/ssl-key.log"
 export EDITOR=nvim
@@ -12,6 +10,14 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.local/cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
+
+export HISTFILE="$XDG_STATE_HOME/history/zsh"
+export PYTHON_HISTORY="$XDG_STATE_HOME/history/python"
+export LESSHISTFILE="$XDG_STATE_HOME/history/less"
+export SQLITE_HISTORY="$XDG_STATE_HOME/history/sqlite"
+export NODE_REPL_HISTORY="$XDG_STATE_HOME/history/node_repl"
+export MYSQL_HISTFILE="$XDG_STATE_HOME/history/mysql"
+export PSQL_HISTORY="$XDG_STATE_HOME/history/psql"
 
 export JUNK_PATH="$HOME/.local/share"
 

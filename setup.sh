@@ -15,6 +15,7 @@ readonly DOTFILES_DIR="./config"
 
 readonly CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+readonly STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 # It seems that firefox respects XDG specs now
 # readonly MOZILLA_HOME="$DATA_HOME/mozilla"
@@ -63,7 +64,8 @@ safe_link() {
 
 main() {
 	log_info "Starting..."
-	mkdir -p "$CONFIG_HOME" "$DATA_HOME" "$HOME/.local/bin"
+	mkdir -p "$CONFIG_HOME" "$DATA_HOME" "$STATE_HOME" "$HOME/.local/bin"
+	mkdir -p "$STATE_HOME/history"
 	mkdir -p "$PKI_HOME" "$NV_HOME"
 	
 	log_info "Copying dotfiles..."
