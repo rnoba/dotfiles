@@ -796,6 +796,20 @@ EOF
 
 }
 
+nvidia_hw() {
+	log_info "Nvidia kernel module..."
+	mkdir -p /mnt/etc/modprobe.d
+	cat > /mnt/etc/modprobe.d/nvidia.conf <<'EOF'
+sudo mkdir -p /etc/modprobe.d
+EOF
+
+	cat > /mnt/etc/modprobe.d/blacklist-nouveau.conf <<'EOF'
+blacklist nouveau
+options nouveau modeset=0
+EOF
+
+}
+
 setup_grub_cfg() {
 	log_info "Grub config..."
 	cat > /mnt/etc/default/grub <<'EOF'
@@ -807,7 +821,7 @@ GRUB_DEFAULT=0
 #GRUB_HIDDEN_TIMEOUT_QUIET=false
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="Void"
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 textrd.driver.blacklist=nouveau modprobe.blacklist=nouveau nvidia_drm.modeset=1"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4"
 GRUB_DISABLE_OS_PROBER=false
 # Uncomment to use basic console
 #GRUB_TERMINAL_INPUT="console"
@@ -984,6 +998,7 @@ main() {
 	log_info "=== COFING ==="
   polkit_allow_wheel_filesystem_mount
 	setup_grub_cfg
+	nvidia_hw
 	echo
 
 	log_info "=== CLEANUP ==="
