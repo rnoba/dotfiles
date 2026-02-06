@@ -132,6 +132,7 @@ XDG_DESKTOP_DIR="$HOME/Public/Garbage"
 EOF
 
 	xdg-user-dirs-update
+	xdg-settings set default-web-browser firefox.desktop
 
 	log_info "Configuring Git..."
 	git config --global user.email "$EMAIL"

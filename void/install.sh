@@ -43,7 +43,7 @@ readonly PACKAGES=(
 	p7zip unzip
 
 	# User applications
-	ntfs-3g ffmpeg 
+	ntfs-3g ffmpeg xdg-settings
 	fd luarocks rustup exa nix fzf gvfs thunar-volman Thunar xdg-user-dirs speech-dispatcher pavucontrol alacritty zsh tmux i3 i3blocks dmenu firefox feh mpv neovim flameshot
 
 	#
