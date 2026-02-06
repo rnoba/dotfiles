@@ -118,15 +118,15 @@ main() {
 		log_warn "SSH key already exists at ~/.ssh/id_ed25519"
 	fi
 	
-	mkdir -p "$HOME/Public/Garbage" "$HOME/Public/Lib" "$HOME/Public/Code" "$HOME/Public/Apps" "$HOME/Downloads" "$HOME/Documents" "$HOME/Pictures" "$HOME/Lodge"
+	mkdir -p "$HOME/Public/Garbage" "$HOME/Public/Lib" "$HOME/Public/Code" "$HOME/Public/Apps" "$HOME/Downloads" "$HOME/Documents" "$HOME/Media/Pictures" "$HOME/Media/Videos" "$HOME/Lodge"
 
 	cat > "$HOME/.config/user-dirs.dirs" <<'EOF'
 XDG_DOWNLOAD_DIR="$HOME/Downloads"
 XDG_PUBLICSHARE_DIR="$HOME/Public"
 XDG_DOCUMENTS_DIR="$HOME/Documents"
-XDG_PICTURES_DIR="$HOME/Pictures"
+XDG_PICTURES_DIR="$HOME/Media/Pictures"
+XDG_VIDEOS_DIR="$HOME/Media/Videos"
 XDG_MUSIC_DIR="$HOME/Public/Garbage"
-XDG_VIDEOS_DIR="$HOME/Public/Garbage"
 XDG_TEMPLATES_DIR="$HOME/Public/Garbage"
 XDG_DESKTOP_DIR="$HOME/Public/Garbage"
 EOF
