@@ -18,11 +18,10 @@ readonly EFI_SIZE="1GiB"
 readonly VOID_REPO="https://repo-fastly.voidlinux.org/current"
 readonly ARCH="x86_64"
 
-readonly EFI_PARTLABEL="Efi"
-readonly ROOT_PARTLABEL="Root"
-
-readonly EFI_FSLABEL="Efi"
-readonly ROOT_FSLABEL="Root"
+readonly EFI_PARTLABEL="EFI"
+readonly ROOT_PARTLABEL="ROOT"
+readonly EFI_FSLABEL="EFI"
+readonly ROOT_FSLABEL="ROOT"
 
 readonly USER_NAME="$HOSTNAME"
 readonly USER_PASSWORD="123"
@@ -57,7 +56,7 @@ readonly PACKAGES=(
 	noto-fonts-ttf noto-fonts-cjk noto-fonts-emoji nerd-fonts
 
 	# Graphics and utilities
-	nvidia vulkan-loader ripgrep xclip
+	nvidia vulkan-loader Vulkan-Tools ripgrep xclip
 
 	# Xorg
 	xorg xorg-server
@@ -66,10 +65,10 @@ readonly PACKAGES=(
 	xtools sudo
 )
 
-log_info()  { printf "%b[INFO]%b %s\n"  "$GREEN" "$NC" "$*"; }
+log_info()  { printf "%b[INFO]%b %s\n"  "$GREEN"  "$NC" "$*"; }
 log_warn()  { printf "%b[WARN]%b %s\n"  "$YELLOW" "$NC" "$*"; }
-log_error() { printf "%b[ERROR]%b %s\n" "$RED"   "$NC" "$*" >&2; }
-log_debug() { printf "%b[DEBUG]%b %s\n" "$BLUE"  "$NC" "$*"; }
+log_error() { printf "%b[ERROR]%b %s\n" "$RED"    "$NC" "$*" >&2; }
+log_debug() { printf "%b[DEBUG]%b %s\n" "$BLUE"   "$NC" "$*"; }
 
 cleanup_on_error() {
 	log_error "Installation failed at line $1"
@@ -89,6 +88,7 @@ check_root() {
 		log_error "This script must be run as root"
 		exit 1
 	fi
+
 	log_info "Root check passed"
 }
 
@@ -97,6 +97,7 @@ check_uefi() {
 		log_error "UEFI mode required. Please boot in UEFI mode."
 		exit 1
 	fi
+
 	log_info "UEFI mode detected"
 }
 
@@ -730,8 +731,8 @@ cleanup() {
 setup_nix() {
 	log_info "Setting up Nix..."
 	
-	if [ -d "/mnt/home/$USER_NAME/Public/Dotfiles" ]; then
-		cat > /mnt/etc/nix/nix.conf <<'EOF'
+
+	cat > /mnt/etc/nix/nix.conf <<'EOF'
 build-users-group = nixbld
 build-use-sandbox = true
 use-xdg-base-directories = true
@@ -739,38 +740,160 @@ connect-timeout = 60000
 experimental-features = nix-command flakes
 EOF
 
-	[ -e "/mnt/etc/nix/nix.conf" ] && cat /mnt/etc/nix/nix.conf
+	cat > /mnt/etc/profile.d/nix.sh <<'EOF'
+# https://github.com/NixOS/nix/blob/master/scripts/nix-profile-daemon.sh.in
+# Only execute this file once per shell.
+# This file is tested by tests/installer/default.nix.
+# Goes in /etc/profile.d/nix.sh
+if [ -n "${__ETC_PROFILE_NIX_SOURCED:-}" ]; then return; fi
+export __ETC_PROFILE_NIX_SOURCED=1
 
-	if [ -e "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" ]; then
-		cp "/mnt/home/$USER_NAME/Public/Dotfiles/void/nix.sh" /mnt/etc/profile.d/nix.sh
-	else
-		log_warn "nix.sh not found in dotfiles"
+NIX_LINK=$HOME/.nix-profile
+if [ -n "${XDG_STATE_HOME-}" ]; then
+	NIX_LINK_NEW="$XDG_STATE_HOME/nix/profile"
+else
+	NIX_LINK_NEW=$HOME/.local/state/nix/profile
+fi
+if [ -e "$NIX_LINK_NEW" ]; then
+	if [ -t 2 ] && [ -e "$NIX_LINK" ]; then
+			warning="\033[1;35mwarning:\033[0m"
+			printf "$warning Both %s and legacy %s exist; using the former.\n" "$NIX_LINK_NEW" "$NIX_LINK" 1>&2
+			if [ "$(realpath "$NIX_LINK")" = "$(realpath "$NIX_LINK_NEW")" ]; then
+					printf "         Since the profiles match, you can safely delete either of them.\n" 1>&2
+			else
+					# This should be an exceptionally rare occasion: the only way to get it would be to
+					# 1. Update to newer Nix;
+					# 2. Remove .nix-profile;
+					# 3. Set the $NIX_LINK_NEW to something other than the default user profile;
+					# 4. Roll back to older Nix.
+					# If someone did all that, they can probably figure out how to migrate the profile.
+					printf "$warning Profiles do not match. You should manually migrate from %s to %s.\n" "$NIX_LINK" "$NIX_LINK_NEW" 1>&2
+			fi
 	fi
+	NIX_LINK="$NIX_LINK_NEW"
+fi
+
+export NIX_PROFILES="@localstatedir@/nix/profiles/default $NIX_LINK"
+
+# Populate bash completions, .desktop files, etc
+if [ -z "${XDG_DATA_DIRS-}" ]; then
+	# According to XDG spec the default is /usr/local/share:/usr/share, don't set something that prevents that default
+	export XDG_DATA_DIRS="/usr/local/share:/usr/share:$NIX_LINK/share:/nix/var/nix/profiles/default/share"
+else
+	export XDG_DATA_DIRS="$XDG_DATA_DIRS:$NIX_LINK/share:/nix/var/nix/profiles/default/share"
+fi
+
+# Set $NIX_SSL_CERT_FILE so that Nixpkgs applications like curl work.
+if [ -n "${NIX_SSL_CERT_FILE:-}" ]; then
+	: # Allow users to override the NIX_SSL_CERT_FILE
+elif [ -e /etc/ssl/certs/ca-certificates.crt ]; then # NixOS, Ubuntu, Debian, Gentoo, Arch
+	export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+elif [ -e /etc/ssl/ca-bundle.pem ]; then # openSUSE Tumbleweed
+	export NIX_SSL_CERT_FILE=/etc/ssl/ca-bundle.pem
+elif [ -e /etc/ssl/certs/ca-bundle.crt ]; then # Old NixOS
+	export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
+elif [ -e /etc/pki/tls/certs/ca-bundle.crt ]; then # Fedora, CentOS
+	export NIX_SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt
+else
+# Fall back to what is in the nix profiles, favouring whatever is defined last.
+check_nix_profiles() {
+	if [ -n "${ZSH_VERSION:-}" ]; then
+		# Zsh by default doesn't split words in unquoted parameter expansion.
+		# Set local_options for these options to be reverted at the end of the function
+		# and shwordsplit to force splitting words in $NIX_PROFILES below.
+		setopt local_options shwordsplit
+	fi
+	for i in $NIX_PROFILES; do
+		if [ -e "$i/etc/ssl/certs/ca-bundle.crt" ]; then
+			export NIX_SSL_CERT_FILE=$i/etc/ssl/certs/ca-bundle.crt
+		fi
+	done
+}
+check_nix_profiles
+unset -f check_nix_profiles
+fi
+
+export PATH="$NIX_LINK/bin:@localstatedir@/nix/profiles/default/bin:$PATH"
+unset NIX_LINK NIX_LINK_NEW
+EOF
 
 	if [[ -d /mnt/etc/sv/nix-daemon ]]; then
 		log_debug "Enabling service: nix-daemon"
+
 			ln -sf /etc/sv/nix-daemon /mnt/etc/runit/runsvdir/default/ || {
 				log_warn "Failed to enable service: nix-daemon"
 			}
 	else
 		log_warn "Service directory not found: nix-daemon"
 	fi
-	else
-		log_warn "Dotfiles directory not found, skipping Nix setup"
-	fi
+
 }
 
 setup_xorg_conf() {
-	if [ -d "/mnt/home/$USER_NAME/Public/Dotfiles" ]; then
-		if [ -e "/mnt/home/$USER_NAME/Public/Dotfiles/xorg.conf" ]; then
-			cp "/mnt/home/$USER_NAME/Public/Dotfiles/xorg.conf" /mnt/etc/X11/xorg.conf
-			log_info "Xorg configuration copied"
-		else
-			log_warn "xorg.conf not found in dotfiles"
-		fi
-	else
-		log_warn "Dotfiles directory not found, skipping xorg.conf"
-	fi
+	cat > /mnt/etc/X11/xorg.conf <<'EOF'
+# nvidia-settings: X configuration file generated by nvidia-settings
+# nvidia-settings:  version 580.126.09
+
+Section "ServerLayout"
+    Identifier     "Layout0"
+    Screen      0  "Screen0" 0 0
+    InputDevice    "Keyboard0" "CoreKeyboard"
+    InputDevice    "Mouse0" "CorePointer"
+    Option         "Xinerama" "0"
+EndSection
+
+Section "Files"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Mouse0"
+    Driver         "mouse"
+    Option         "Protocol" "auto"
+    Option         "Device" "/dev/psaux"
+    Option         "Emulate3Buttons" "no"
+    Option         "ZAxisMapping" "4 5"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Keyboard0"
+    Driver         "kbd"
+EndSection
+
+Section "Monitor"
+    # HorizSync source: edid, VertRefresh source: edid
+    Identifier     "Monitor0"
+    VendorName     "Unknown"
+    ModelName      "AOC 24G4"
+    HorizSync       200.0 - 200.0
+    VertRefresh     48.0 - 180.0
+    Option         "DPMS"
+EndSection
+
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    VendorName     "NVIDIA Corporation"
+    BoardName      "NVIDIA GeForce RTX 3060"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor0"
+    DefaultDepth    24
+    Option         "Stereo" "0"
+    Option         "nvidiaXineramaInfoOrder" "DP-0"
+    Option         "metamodes" "1920x1080_180 +0+0"
+    Option         "SLI" "Off"
+    Option         "MultiGPU" "Off"
+    Option         "BaseMosaic" "off"
+    SubSection     "Display"
+        Depth       24
+    EndSubSection
+EndSection
+EOF
 }
 
 polkit_allow_wheel_filesystem_mount() {
@@ -801,7 +924,7 @@ nvidia_hw() {
 	log_info "Nvidia kernel module..."
 	mkdir -p /mnt/etc/modprobe.d
 	cat > /mnt/etc/modprobe.d/nvidia.conf <<'EOF'
-sudo mkdir -p /etc/modprobe.d
+options nvidia_drm modeset=1
 EOF
 
 	cat > /mnt/etc/modprobe.d/blacklist-nouveau.conf <<'EOF'
@@ -986,18 +1109,11 @@ main() {
 	setup_dotfiles
 	echo
 
-	log_info "=== NIX ==="
-	setup_nix
-
-	log_info "=== COPYING XORG CONFIG FILE ==="
-	setup_xorg_conf
-
-	log_info "=== FIREFOX POLICIES ==="
-	setup_firefox
-	echo
-
 	log_info "=== COFING ==="
   polkit_allow_wheel_filesystem_mount
+	setup_nix
+	setup_firefox
+	setup_xorg_conf
 	setup_grub_cfg
 	nvidia_hw
 	echo

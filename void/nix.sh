@@ -1,7 +1,6 @@
 # https://github.com/NixOS/nix/blob/master/scripts/nix-profile-daemon.sh.in
 # Only execute this file once per shell.
 # This file is tested by tests/installer/default.nix.
-# Goes in /etc/profile.d/nix.sh
 if [ -n "${__ETC_PROFILE_NIX_SOURCED:-}" ]; then return; fi
 export __ETC_PROFILE_NIX_SOURCED=1
 
