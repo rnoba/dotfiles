@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 MODULE_NAME="nvidia"
-MODULE_DESCRIPTION="Install NVIDIA proprietary drivers and configure hardware"
+MODULE_DESCRIPTION="Install & enable NVIDIA PROPRIETARY drivers (OBS: this will disable nouveau)"
 MODULE_DEPENDS=("base")
 
 readonly NVIDIA_PACKAGES=(
