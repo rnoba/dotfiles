@@ -60,5 +60,5 @@ EOF
 firewall_enable() {
 	enable_service "nftables"
 
-	log_inf "nftables enabled"
+	log_info "nftables enabled"
 }
