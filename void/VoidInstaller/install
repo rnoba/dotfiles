@@ -1,0 +1,277 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+IFS=$'\n\t'
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+
+source "$SCRIPT_DIR/lib/common.sh"
+
+[[ -f "$SCRIPT_DIR/config.sh" ]] && source "$SCRIPT_DIR/config.sh"
+
+declare -a SELECTED_MODULES=()
+declare SELECTED_PROFILE=""
+declare -i DRY_RUN=0
+
+DEFAULT_PROFILE="desktop"
+
+show_help() {
+	cat <<'EOF'
+Void Linux Modular Installer
+
+Usage:
+	./install [OPTIONS] [MODULES...]
+
+Options:
+	-p, --profile PROFILE    Use predefined profile (minimal, desktop, server)
+	-l, --list               List available modules
+	--list-profiles          List available profiles
+	-n, --dry-run            Show what would be done without executing
+	-h, --help               Show this help message
+
+Examples:
+	./install                          # Install default desktop profile
+	./install xorg i3                  # Install only Xorg and i3
+	./install --profile minimal        # Install minimal profile
+	./install --profile server         # Install server profile
+	./install base dev                 # Install base system with dev tools
+
+Available modules are in the modules/ directory.
+Profiles are in the profiles/ directory.
+EOF
+}
+
+list_modules() {
+	echo "Available modules:"
+	echo
+
+	local module_file module_name module_desc
+	for module_file in "$SCRIPT_DIR"/modules/*.sh; do
+		[[ -f "$module_file" ]] || continue
+
+		MODULE_NAME=""
+		MODULE_DESCRIPTION=""
+		MODULE_DEPENDS=()
+
+		source "$module_file" 2>/dev/null || true
+
+		module_name="$(basename "$module_file" .sh)"
+		module_desc="${MODULE_DESCRIPTION:-No description}"
+
+		printf "  %-15s %s\n" "$module_name" "$module_desc"
+	done
+	echo
+}
+
+list_profiles() {
+	echo "Available profiles:"
+	echo
+
+	local profile_file profile_name profile_desc
+	for profile_file in "$SCRIPT_DIR"/profiles/*.sh; do
+		[[ -f "$profile_file" ]] || continue
+
+		PROFILE_NAME=""
+		PROFILE_DESCRIPTION=""
+		PROFILE_MODULES=()
+
+		source "$profile_file" 2>/dev/null || true
+
+		profile_name="$(basename "$profile_file" .sh)"
+		profile_desc="${PROFILE_DESCRIPTION:-No description}"
+
+		printf "  %-15s %s\n" "$profile_name" "$profile_desc"
+		if [[ ${#PROFILE_MODULES[@]} -gt 0 ]]; then
+			echo "                  Modules: ${PROFILE_MODULES[*]}"
+		fi
+		echo
+	done
+}
+
+register_all_modules() {
+	local module_file module_name
+
+	for module_file in "$SCRIPT_DIR"/modules/*.sh; do
+		[[ -f "$module_file" ]] || continue
+		module_name="$(basename "$module_file" .sh)"
+		register_module "$module_name" "$module_file"
+	done
+}
+
+load_profile() {
+	local profile_name="$1"
+	local profile_file="$SCRIPT_DIR/profiles/$profile_name.sh"
+
+	if [[ ! -f "$profile_file" ]]; then
+		log_error "Profile not found: $profile_name"
+		log_info "Available profiles:"
+		list_profiles
+		exit 1
+	fi
+
+	PROFILE_NAME=""
+	PROFILE_DESCRIPTION=""
+	PROFILE_MODULES=()
+
+	source "$profile_file"
+
+	if [[ ${#PROFILE_MODULES[@]} -eq 0 ]]; then
+		log_error "Profile $profile_name has no modules defined"
+		exit 1
+	fi
+
+	SELECTED_MODULES=("${PROFILE_MODULES[@]}")
+	log_info "Using profile: $PROFILE_NAME"
+	log_info "Description: $PROFILE_DESCRIPTION"
+}
+
+parse_args() {
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+			-h|--help)
+				show_help
+				exit 0
+				;;
+			-l|--list)
+				list_modules
+				exit 0
+				;;
+			--list-profiles)
+				list_profiles
+				exit 0
+				;;
+			-p|--profile)
+				if [[ -z "${2:-}" ]]; then
+					log_error "Profile name required"
+					exit 1
+				fi
+				SELECTED_PROFILE="$2"
+				shift 2
+				;;
+			-n|--dry-run)
+				DRY_RUN=1
+				shift
+				;;
+			-*)
+				log_error "Unknown option: $1"
+				show_help
+				exit 1
+				;;
+			*)
+				SELECTED_MODULES+=("$1")
+				shift
+				;;
+		esac
+	done
+
+	if [[ ${#SELECTED_MODULES[@]} -eq 0 ]] && [[ -z "$SELECTED_PROFILE" ]]; then
+		SELECTED_PROFILE="$DEFAULT_PROFILE"
+	fi
+}
+
+run_hook() {
+	local hook_name="$1"
+	local hook_file="$SCRIPT_DIR/hooks/$hook_name.sh"
+
+	if [[ -f "$hook_file" ]]; then
+		log_info "Running hook: $hook_name"
+		source "$hook_file"
+	fi
+}
+
+run_installation() {
+	log_info "╔════════════════════════════════════════════════════════════╗"
+	log_info "║       Rnoba Void Linux Installer                           ║"
+	log_info "╚════════════════════════════════════════════════════════════╝"
+	echo
+
+	if [[ -n "$SELECTED_PROFILE" ]]; then
+		load_profile "$SELECTED_PROFILE"
+	fi
+
+	log_info "Modules to install: ${SELECTED_MODULES[*]}"
+	echo
+
+	if [[ $DRY_RUN -eq 1 ]]; then
+		log_info "DRY RUN MODE - No changes will be made"
+		echo
+		for module in "${SELECTED_MODULES[@]}"; do
+			log_module "Would run: $module"
+		done
+		return 0
+	fi
+
+	run_hook "pre-install"
+
+	log_info "=== PRE-FLIGHT CHECKS ==="
+	check_root
+	check_uefi
+	check_network
+	check_disk_exists
+	check_existing_mounts
+	echo
+
+	confirm_disk
+	echo
+
+	register_all_modules
+
+	for module in "${SELECTED_MODULES[@]}"; do
+		run_module "$module" "run"
+		echo
+	done
+
+	log_info "=== CHROOT CONFIGURATION ==="
+	for module in "${SELECTED_MODULES[@]}"; do
+		run_module "$module" "chroot" 2>/dev/null || true
+	done
+	echo
+
+	run_hook "post-install"
+
+	cleanup
+	echo
+
+	show_summary
+}
+
+show_summary() {
+	echo
+	echo "════════════════════════════════════════════════════════════════"
+	log_info "INSTALLATION COMPLETED SUCCESSFULLY"
+	echo "════════════════════════════════════════════════════════════════"
+	echo
+	echo "Disk Configuration:"
+	echo "  Target disk:    $TARGET_DISK"
+	echo "  Partition type: GPT"
+	echo
+	echo "System Configuration:"
+	echo "  Hostname:       $HOSTNAME"
+	echo "  Timezone:       $TIMEZONE"
+	echo "  Locale:         $LOCALE"
+	echo "  Keymap:         $KEYMAP"
+	echo
+	echo "Credentials:"
+	echo "  Root password:  $ROOT_PASSWORD"
+	echo "  User:           $USER_NAME"
+	echo "  User password:  $USER_PASSWORD"
+	echo
+	echo "════════════════════════════════════════════════════════════════"
+	echo
+
+	read -rp "Reboot now? (y/N): " answer
+	if [[ "$answer" =~ ^[Yy]$ ]]; then
+		log_info "Rebooting..."
+		reboot
+	else
+		log_info "Remember to reboot before using the system!"
+	fi
+}
+
+main() {
+	parse_args "$@"
+	run_installation
+}
+
+main "$@"
