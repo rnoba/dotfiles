@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	echo "Usage: $0 <layout1> [layout2] [layout3] ..."
+	echo "Example: $0 us br ru"
+	exit 1
+fi
+
+LAYOUTS=("$@")
+CURRENT_LAYOUT=$(setxkbmap -query | grep layout | awk '{print $2}')
+
+CURRENT_INDEX=-1
+for i in "${!LAYOUTS[@]}"; do
+	if [ "${LAYOUTS[$i]}" = "$CURRENT_LAYOUT" ]; then
+		CURRENT_INDEX=$i
+		break
+	fi
+done
+
+if [ $CURRENT_INDEX -eq -1 ]; then
+	NEXT_INDEX=0
+else
+	NEXT_INDEX=$(( (CURRENT_INDEX + 1) % ${#LAYOUTS[@]} ))
+fi
+
+NEXT_LAYOUT="${LAYOUTS[$NEXT_INDEX]}"
+
+setxkbmap "$NEXT_LAYOUT"
+
+echo "Switched to $NEXT_LAYOUT"
