@@ -1,0 +1,6 @@
+#!/bin/bash
+
+pushd "$HOME/Public/Code/Spotf" >/dev/null
+source ./.ENV/bin/activate
+./main.py "$@"
+popd >/dev/null
