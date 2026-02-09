@@ -13,13 +13,13 @@ log_error() { printf "%b[ERROR]%b %s\n" "$RED" "$NC" "$1" >&2; }
 log_info()  { printf "%b[INFO]%b %s\n" "$GREEN" "$NC" "$1"; }
 
 if ! command -v nix >/dev/null 2>&1; then 
-	log_error "Nix not installed"
-	exit 1
+  log_error "Nix not installed"
+  exit 1
 fi
 
 if [ ! -d "$BIN_DIR" ]; then 
-	log_error "Bin directory ($BIN_DIR) does not exist."
-	exit 1
+  log_error "Bin directory ($BIN_DIR) does not exist."
+  exit 1
 fi
 
 TEMP_DIR=$(mktemp -d)
@@ -29,17 +29,17 @@ pushd "$TEMP_DIR" >/dev/null
 
 cat > "./setup.nix" <<'EOF'
 { pkgs ? import <nixpkgs> {} }:
-pkgs.writeShellScriptBin "pixelorama" ''
+pkgs.writeShellScriptBin "libresprite" ''
 #!/usr/bin/env bash
 
 set -euo pipefail
-if [ -x "${pkgs.pixelorama}/bin/.pixelorama-wrapped" ]; then
-		exec ${pkgs.pixelorama}/bin/.pixelorama-wrapped "$@"
-	elif [ -x "${pkgs.pixelorama}/bin/pixelorama" ]; then
-		exec ${pkgs.pixelorama}/bin/pixelorama "$@"
-	else
-		echo "Error: Binary not found in ${pkgs.pixelorama}/bin/" >&2
-		exit 1
+if [ -x "${pkgs.libresprite}/bin/.libresprite-wrapped" ]; then
+    exec ${pkgs.libresprite}/bin/.libresprite-wrapped "$@"
+  elif [ -x "${pkgs.libresprite}/bin/libresprite" ]; then
+    exec ${pkgs.libresprite}/bin/libresprite "$@"
+  else
+    echo "Error: Binary not found in ${pkgs.libresprite}/bin/" >&2
+    exit 1
 fi
 ''
 EOF
@@ -47,8 +47,8 @@ EOF
 log_info "Building wrapper with Nix..."
 nix-build ./setup.nix
 
-log_info "Installing to $BIN_DIR/pixelorama..."
-ln -sf "$(realpath result)/bin/pixelorama" "$BIN_DIR/pixelorama"
+log_info "Installing to $BIN_DIR/libresprite..."
+ln -sf "$(realpath result)/bin/libresprite" "$BIN_DIR/libresprite"
 
 popd >/dev/null
 
