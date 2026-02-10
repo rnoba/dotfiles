@@ -6,6 +6,34 @@ markup=pango
 full_text=<span foreground="#c678dd" size="x-large">|</span>
 markup=pango
 
+[spotify-prev]
+full_text=<
+command=spotcli prev
+separator=false
+
+[spotify-playpause]
+full_text=🐱
+command=spotcli playpause
+color=#00FFB3
+separator=false
+
+[spotify-next]
+full_text=>
+command=spotcli next
+separator=false
+
+[spotify-current]
+command=spotcli current --short
+interval=2
+separator=true
+
+[funky]
+full_text=♪♪
+
+[separator]
+full_text=<span foreground="#c678dd" size="x-large">|</span>
+markup=pango
+
 [VOLUME]
 command=pactl get-sink-volume @DEFAULT_SINK@ | cut -d '/' -f 2
 interval=1
