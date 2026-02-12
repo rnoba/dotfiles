@@ -5,19 +5,20 @@ MODULE_DESCRIPTION="Install Xorg display server"
 MODULE_DEPENDS=("base")
 
 readonly XORG_PACKAGES=(
-	xorg
-	xorg-server
-	xclip
+  xorg
+  xorg-server
+  xclip
+  xdg-user-dirs
 )
 
 xorg_run() {
-	log_info "=== XORG INSTALLATION ==="
+  log_info "=== XORG INSTALLATION ==="
 
-	xorg_install
+  xorg_install
 }
 
 xorg_install() {
-	log_info "Installing Xorg packages..."
+  log_info "Installing Xorg packages..."
 
-	install_packages "${XORG_PACKAGES[@]}"
+  install_packages "${XORG_PACKAGES[@]}"
 }

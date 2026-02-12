@@ -71,6 +71,7 @@ main() {
 
 	mkdir -p "$CONFIG_HOME" "$DATA_HOME" "$STATE_HOME" "$HOME/.local/bin"
 	mkdir -p "$STATE_HOME/history"
+	mkdir -p "$STATE_HOME/nix/profile"
 	mkdir -p "$PKI_HOME" "$NV_HOME"
 	
 	log_info "Copying dotfiles..."

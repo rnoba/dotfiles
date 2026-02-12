@@ -14,7 +14,6 @@ PROFILE_MODULES=(
 	nvidia
 	fonts
 	dev
-	firefox
 	zram
 	user
 	bootloader
