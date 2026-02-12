@@ -22,6 +22,8 @@ readonly DEV_PACKAGES=(
   p7zip
   unzip
 
+  python-devel
+  dbus-glib-devel
   libX11-devel
   libXfixes-devel
   libXext-devel
