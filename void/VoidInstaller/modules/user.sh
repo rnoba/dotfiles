@@ -11,6 +11,8 @@ readonly USER_PACKAGES=(
   Thunar
   alacritty
   mpv
+  zathura
+  zathura-pdf-mupdf
   feh
   thunar-volman
   gvfs
