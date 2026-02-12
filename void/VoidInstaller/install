@@ -31,11 +31,9 @@ Options:
 	-h, --help               Show this help message
 
 Examples:
-	./install                          # Install default desktop profile
-	./install xorg i3                  # Install only Xorg and i3
-	./install --profile minimal        # Install minimal profile
-	./install --profile server         # Install server profile
-	./install base dev                 # Install base system with dev tools
+	./install
+	./install --profile desktop
+	./install xorg i3 # Install only Xorg and i3
 
 Available modules are in the modules/ directory.
 Profiles are in the profiles/ directory.
@@ -182,7 +180,7 @@ run_hook() {
 
 run_installation() {
 	log_info "╔════════════════════════════════════════════════════════════╗"
-	log_info "║       Rnoba Void Linux Installer                           ║"
+	LOG_INFO "║       RNOBA VOID LINUX INSTALLER                           ║"
 	log_info "╚════════════════════════════════════════════════════════════╝"
 	echo
 
