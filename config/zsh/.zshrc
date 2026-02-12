@@ -31,4 +31,11 @@ source "$HOME/.config/zsh/plugins/vendor/zsh-syntax-highlighting/zsh-syntax-high
 source "$HOME/.config/zsh/plugins/vendor/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=magenta,bold,underline"
 
+bracketed-paste-magic() {
+    zle .$WIDGET "$@"
+    LBUFFER=${LBUFFER%$'\n'}
+}
+
+zle -N bracketed-paste bracketed-paste-magic
+
 eval "$(direnv hook zsh)"
