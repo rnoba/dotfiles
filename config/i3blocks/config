@@ -27,9 +27,6 @@ command=spotcli current --short
 interval=2
 separator=true
 
-[funky]
-full_text=♪♪
-
 [separator]
 full_text=<span foreground="#c678dd" size="x-large">|</span>
 markup=pango

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import dbus
 import sys
 
@@ -11,8 +11,7 @@ def get_spotify_bus():
         player = dbus.Interface(spotify, 'org.mpris.MediaPlayer2.Player')
         return properties, player
     except dbus.exceptions.DBusException as e:
-        print(f"Error: Could not connect to Spotify. Is it running?")
-        print(f"Details: {e}")
+        print(f"🐱🐱")
         sys.exit(1)
 
 def get_current_track(short=False):
@@ -41,7 +40,7 @@ def get_current_track(short=False):
             print(f"  Status: {playback_status}")
     except Exception as e:
         if short:
-            print("♫ Spotify")
+            print("🐱")
         else:
             print(f"Error getting track info: {e}")
 

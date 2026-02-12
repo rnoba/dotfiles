@@ -134,6 +134,9 @@ EOF
 	xdg-user-dirs-update
 	xdg-settings set default-web-browser firefox.desktop
 
+  # nix-channel --add https://nixos.org/channels/nixpkgs-unstable unstable
+  # nix-channel --update
+
 	log_info "Configuring Git..."
 	git config --global user.email "$EMAIL"
 	git config --global user.name "$NAME"
