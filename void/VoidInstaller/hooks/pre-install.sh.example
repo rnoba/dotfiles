@@ -3,3 +3,4 @@
 log_info "Running pre-install hook..."
 
 log_info "Pre-install hook completed"
+echo

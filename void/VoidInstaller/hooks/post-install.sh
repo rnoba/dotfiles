@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-log_info "════════════════════════════════════════════════════════════"
-log_info "Running post-install customizations..."
-log_info "════════════════════════════════════════════════════════════"
+log_info "Running post-install hook..."
 
 configure_xorg_nvidia() {
 	log_info "Configuring custom Xorg settings for NVIDIA..."
@@ -177,18 +175,8 @@ net.core.rmem_max=16777216
 net.core.wmem_max=16777216
 EOF
 	
-	cat > /mnt/etc/profile.d/custom.sh <<'EOF'
-# Custom environment variables
-
-export EDITOR=nvim
-export VISUAL=nvim
-export BROWSER=firefox
-
-# Better command history
-export HISTSIZE=10000
-export HISTFILESIZE=20000
-export HISTCONTROL=ignoredups:erasedups
-EOF
+# cat > /mnt/etc/profile.d/custom.sh <<'EOF'
+# EOF
 	
 	log_info "System tweaks applied"
 }
@@ -198,7 +186,5 @@ configure_firefox_policies
 configure_custom_dns
 # configure_system_tweaks
 
-log_info "════════════════════════════════════════════════════════════"
-log_info "Post-install customizations completed!"
-log_info "════════════════════════════════════════════════════════════"
+log_info "Post-install hook completed"
 echo
