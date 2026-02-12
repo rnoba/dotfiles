@@ -8,6 +8,7 @@ readonly XORG_PACKAGES=(
   xorg
   xorg-server
   xclip
+  xdg-utils
   xdg-user-dirs
 )
 

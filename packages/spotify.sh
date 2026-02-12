@@ -75,7 +75,6 @@ let
   };
 in
 pkgs.writeShellScriptBin "spotify" ''
-  #!/usr/bin/env bash
   set -euo pipefail
   
   AD_BLOCK_LIB="${adblock}/lib"

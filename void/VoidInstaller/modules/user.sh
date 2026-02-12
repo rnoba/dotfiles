@@ -11,6 +11,9 @@ readonly USER_PACKAGES=(
   Thunar
   alacritty
   mpv
+  exa
+  ntfs-3g
+  neovim
   zathura
   zathura-pdf-mupdf
   feh

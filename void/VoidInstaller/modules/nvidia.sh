@@ -9,6 +9,7 @@ readonly NVIDIA_PACKAGES=(
   nvidia-vaapi-driver
   libva
   libva-utils
+  nvtop
   mesa-vaapi
   vulkan-loader
   Vulkan-Tools

@@ -19,14 +19,18 @@ readonly DEV_PACKAGES=(
   fzf
   ffmpeg
   tmux
-  neovim
-  xdg-utils
   p7zip
   unzip
-  ntfs-3g
-  exa
 
-  #
+  libX11-devel
+  libXfixes-devel
+  libXext-devel
+  SDL
+  SDL-devel
+  SDL2
+  SDL2-devel
+  SDL3
+  SDL3-devel
 )
 
 dev_run() {
