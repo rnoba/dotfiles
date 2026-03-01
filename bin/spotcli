@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+pushd "$HOME/Public/Dotfiles/packages/Spotf" >/dev/null
+source ./.ENV/bin/activate
+./main.py "$@"
+popd >/dev/null

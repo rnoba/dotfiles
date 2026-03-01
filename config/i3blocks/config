@@ -1,0 +1,71 @@
+[funky]
+full_text=<span foreground="red" size="x-large">🐱🐏</span>
+markup=pango
+
+[separator]
+full_text=<span foreground="#c678dd" size="x-large">|</span>
+markup=pango
+
+[spotify-prev]
+full_text=<
+command=spotcli prev
+separator=false
+
+[spotify-playpause]
+full_text=🐱
+command=spotcli playpause
+color=#00FFB3
+separator=false
+
+[spotify-next]
+full_text=>
+command=spotcli next
+separator=false
+
+[spotify-current]
+command=spotcli current --short
+interval=2
+separator=true
+
+[separator]
+full_text=<span foreground="#c678dd" size="x-large">|</span>
+markup=pango
+
+[VOLUME]
+command=pactl get-sink-volume @DEFAULT_SINK@ | cut -d '/' -f 2 | awk '{ printf("Volume: %d% \n", $1) }'
+interval=1
+color=#dfdfdf
+align=left
+
+[MEM]
+command=free -h | awk '/Mem:/ { printf("Memory: %5s/%s \n", $3, $2) }'
+interval=10
+color=#dfdfdf
+separator=false
+align=left
+
+[DISK]
+command=df -h / | awk '/\//{ printf("Disk: %4s/%s \n", $4, $2) }'
+interval=20
+color=#dfdfdf
+separator=false
+
+[separator]
+full_text=<span foreground="#c678dd" size="x-large">|</span>
+markup=pango
+
+[TIME_DATE]
+command=date +" %a, %d %b - %H:%M:%S"
+interval=5
+color=#dfdfdf
+separator=false
+
+[KBD]
+command=setxkbmap -query | grep layout | awk '{print $2}'
+interval=1
+color=#dfdfdf
+separator=false
+
+[separator]
+full_text=<span foreground="#c678dd" size="x-large">|</span>
+markup=pango
