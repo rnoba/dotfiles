@@ -112,7 +112,6 @@ configure_firefox_policies() {
 		},
 		"DisableTelemetry": true,
 		"DisablePocket": true,
-		"OfferToSaveLogins": false,
 		"PromptForDownloadLocation": true,
 		"Preferences": {
 			"browser.startup.homepage": {
