@@ -37,6 +37,28 @@ interval=1
 color=#dfdfdf
 align=left
 
+[separator]
+full_text=<span foreground="#c678dd" size="x-large">|</span>
+markup=pango
+
+[CPU_TEMP]
+command=sensors | awk '/Tctl|Tdie/ { printf("CPU: %s\n", $2); exit }'
+interval=4
+color=#dfdfdf
+separator=false
+align=left
+
+[GPU_TEMP]
+command=nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits | awk '{ printf("GPU: %s°C\n", $1) }'
+interval=4
+color=#dfdfdf
+separator=false
+align=left
+
+[separator]
+full_text=<span foreground="#c678dd" size="x-large">|</span>
+markup=pango
+
 [MEM]
 command=free -h | awk '/Mem:/ { printf("Memory: %5s/%s \n", $3, $2) }'
 interval=10
