@@ -5,15 +5,11 @@ MODULE_DESCRIPTION="Install base system and core packages"
 MODULE_DEPENDS=("disk")
 
 readonly BASE_PACKAGES=(
-  base-system
-  void-repo-nonfree
-  void-repo-multilib
   grub
   grub-x86_64-efi
   efibootmgr
   dosfstools
   NetworkManager
-  network-manager-applet
   dhcpcd
   openresolv
   dbus
@@ -57,14 +53,8 @@ base_update() {
 }
 
 base_install_packages() {
-  log_info "Installing base packages (${#BASE_PACKAGES[@]})..."
-
-  xbps-install -Sy -r /mnt -R "$VOID_REPO" "${BASE_PACKAGES[@]}" || {
-    log_error "Failed to install base packages"
-    exit 1
-  }
-
-  log_info "Base packages installed"
+  log_info "Installing base packages..."
+  install_packages "${BASE_PACKAGES[@]}"
 }
 
 base_configure() {

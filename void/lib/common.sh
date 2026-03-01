@@ -25,7 +25,7 @@ readonly NC='\033[0m'
 : "${USER_NAME:=$HOSTNAME}"
 : "${USER_PASSWORD:=123}"
 : "${ROOT_PASSWORD:=123}"
-: "${USER_SHELL:=/bin/zsh}" 
+: "${USER_SHELL:=/usr/bin/zsh}" 
 : "${USER_GROUPS:=wheel,audio,video,input,storage,optical}"
 
 declare -g MODULE_NAME=""

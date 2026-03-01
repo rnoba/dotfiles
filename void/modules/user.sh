@@ -15,6 +15,7 @@ readonly USER_PACKAGES=(
   neovim
   zathura
   zathura-pdf-mupdf
+  network-manager-applet
   feh
   # ntfs-3g
   # thunar-volman
@@ -31,13 +32,7 @@ user_run() {
 
 user_install_packages() {
   log_info "Installing user packages (${#USER_PACKAGES[@]})..."
-
-  xbps-install -Sy -r /mnt -R "$VOID_REPO" "${USER_PACKAGES[@]}" || {
-    log_error "Failed to install user packages"
-    exit 1
-  }
-
-  log_info "User packages installed"
+  install_packages "${USER_PACKAGES[@]}"
 }
 
 user_root_password() {

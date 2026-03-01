@@ -11,12 +11,12 @@ readonly NIX_PACKAGES=(
 nix_run() {
   log_info "=== NIX CONFIGURATION ==="
 
-  nix_install
+  nix_install_packages
   nix_configure
   nix_enable_service
 }
 
-nix_install() {
+nix_install_packages() {
   log_info "Installing Nix..."
 
   install_packages "${NIX_PACKAGES[@]}"

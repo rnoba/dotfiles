@@ -18,13 +18,7 @@ firewall_run() {
 
 firewall_install_packages() {
   log_info "Installing firewall packages (${#FIREWALL_PACKAGES[@]})..."
-
-  xbps-install -Sy -r /mnt -R "$VOID_REPO" "${FIREWALL_PACKAGES[@]}" || {
-    log_error "Failed to install firewall packages"
-    exit 1
-  }
-
-  log_info "Firewall packages installed"
+  install_packages "${FIREWALL_PACKAGES[@]}"
 }
 
 firewall_config() {

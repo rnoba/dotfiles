@@ -13,10 +13,10 @@ readonly I3_PACKAGES=(
 i3_run() {
   log_info "=== I3 INSTALLATION ==="
 
-  i3_install
+  i3_install_packages
 }
 
-i3_install() {
+i3_install_packages() {
   log_info "Installing i3 packages..."
   install_packages "${I3_PACKAGES[@]}"
 }

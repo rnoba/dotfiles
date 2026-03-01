@@ -15,10 +15,10 @@ readonly XORG_PACKAGES=(
 xorg_run() {
   log_info "=== XORG INSTALLATION ==="
 
-  xorg_install
+  xorg_install_packages
 }
 
-xorg_install() {
+xorg_install_packages() {
   log_info "Installing Xorg packages..."
 
   install_packages "${XORG_PACKAGES[@]}"

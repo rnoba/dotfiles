@@ -18,12 +18,12 @@ readonly NVIDIA_PACKAGES=(
 nvidia_run() {
   log_info "=== NVIDIA CONFIGURATION ==="
 
-  nvidia_install
+  nvidia_install_packages
   nvidia_configure_kernel
   nvidia_configure_modprobe
 }
 
-nvidia_install() {
+nvidia_install_packages() {
   log_info "Installing NVIDIA packages..."
   install_packages "${NVIDIA_PACKAGES[@]}"
 }
