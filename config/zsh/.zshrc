@@ -10,6 +10,7 @@ autoload -Uz compinit && compinit
 
 alias nix-shell='nix-shell --run zsh'
 alias nix-develop='nix develop -c zsh'
+alias grep='rg'
 alias ls='exa --icons --group-directories-first --sort type'
 
 setopt prompt_subst
