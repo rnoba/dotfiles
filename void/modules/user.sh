@@ -11,6 +11,7 @@ readonly USER_PACKAGES=(
   Thunar
   alacritty
   mpv
+  lm_sensors
   exa
   neovim
   zathura
