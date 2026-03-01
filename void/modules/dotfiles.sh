@@ -4,7 +4,7 @@ MODULE_NAME="dotfiles"
 MODULE_DESCRIPTION="Clone and setup dotfiles"
 MODULE_DEPENDS=("user")
 
-: "${DOTFILES_REPO:="https://gitlab.com/rnoba/dotfiles/"}"
+: "${DOTFILES_REPO:="https://github.com/rnoba/dotfiles/"}"
 
 dotfiles_run() {
   log_info "=== DOTFILES SETUP ==="

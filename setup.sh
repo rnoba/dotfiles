@@ -8,7 +8,7 @@ readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
 readonly NC='\033[0m'
 
-readonly EMAIL="34883127-rnoba@users.noreply.gitlab.com"
+readonly EMAIL="130116482+rnoba@users.noreply.github.com"
 readonly NAME="rnoba (Rafael)"
 
 readonly DOTFILES_DIR="./config"

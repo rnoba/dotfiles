@@ -30,4 +30,4 @@ SUDO_NOPASSWD="true"
 USER_SHELL="/usr/bin/zsh"
 USER_GROUPS="wheel,audio,video,input,storage,optical,kvm"
 
-DOTFILES_REPO="https://gitlab.com/rnoba/dotfiles"
+DOTFILES_REPO="https://github.com/rnoba/dotfiles"
