@@ -24,8 +24,6 @@ readonly STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 # $HOME/.pki - Normally created by Chromium
 # https://chromium.googlesource.com/chromium/src/base/+/535b6a8e45ea7b23343488f2abd8068c1cc7548b/nss_init.cc
 readonly PKI_HOME="$DATA_HOME/pki"
-
-#
 readonly NV_HOME="$DATA_HOME/nv"
 
 log_info() { printf "%b[INFO]%b %s\n" "$GREEN" "$NC" "$1"; }
@@ -87,18 +85,17 @@ main() {
   safe_copy "$DOTFILES_DIR/tmux-sessionizer" "$CONFIG_HOME/tmux-sessionizer"
   safe_copy "$DOTFILES_DIR/X11" "$CONFIG_HOME/X11"
 
-  if [[ -d "$HOME/.pki" && ! -e "$PKI_HOME" ]]; then
-    log_warn "Existing ~/.pki found, moving to XDG_DATA_HOME"
-    mv "$HOME/.pki" "$PKI_HOME"
-  fi
-
-  if [[ -d "$HOME/.nv" && ! -e "$NV_HOME" ]]; then
-    log_warn "Existing ~/.nv found, moving to XDG_DATA_HOME"
-    mv "$HOME/.nv" "$NV_HOME"
-  fi
-
-  safe_link "$PKI_HOME" "$HOME/.pki"
-  safe_link "$NV_HOME"  "$HOME/.nv"
+  # if [[ -d "$HOME/.pki" && ! -e "$PKI_HOME" ]]; then
+  #   log_warn "Existing ~/.pki found, moving to XDG_DATA_HOME"
+  #   mv "$HOME/.pki" "$PKI_HOME"
+  # fi
+  #
+  # if [[ -d "$HOME/.nv" && ! -e "$NV_HOME" ]]; then
+  #   log_warn "Existing ~/.nv found, moving to XDG_DATA_HOME"
+  #   mv "$HOME/.nv" "$NV_HOME"
+  # fi
+  # safe_link "$PKI_HOME" "$HOME/.pki"
+  # safe_link "$NV_HOME"  "$HOME/.nv"
 
   mkdir -p "$HOME/Public/Garbage" "$HOME/Public/Lib" "$HOME/Public/Code" "$HOME/Public/Apps" "$HOME/Downloads" "$HOME/Documents" "$HOME/Media/Pictures" "$HOME/Media/Videos" "$HOME/Lodge"
   cat > "$HOME/.config/user-dirs.dirs" <<'EOF'

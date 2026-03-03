@@ -44,7 +44,9 @@ export PATH="$PNPM_HOME:$PATH"
 
 export N_PREFIX="$XDG_DATA_HOME/N_node"
 
-export __GL_SHADER_DISK_CACHE_PATH="$XDG_DATA_HOME"
+export __GL_SHADER_DISK_CACHE_PATH="$XDG_CACHE_HOME"
+export __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME"
 
 export NIXPKGS_ALLOW_UNFREE=1
 
@@ -90,4 +92,4 @@ st=38;5;172"
 export LIBVA_DRIVER_NAME=nvidia
 export NVD_BACKEND=direct
 
-# [[ -f $RUSTUP_HOME/env ]] && source "$RUSTUP_HOME/env"
+[[ -f $RUSTUP_HOME/env ]] && source "$RUSTUP_HOME/env"
