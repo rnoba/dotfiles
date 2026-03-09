@@ -92,4 +92,4 @@ st=38;5;172"
 export LIBVA_DRIVER_NAME=nvidia
 export NVD_BACKEND=direct
 
-[[ -f $RUSTUP_HOME/env ]] && source "$RUSTUP_HOME/env"
+# [[ -f $RUSTUP_HOME/env ]] && source "$RUSTUP_HOME/env"
