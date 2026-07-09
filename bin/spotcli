@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+pushd "$HOME/Public/Dotfiles/packages/Spotf" >/dev/null
+[[ ! -f ./.ENV/bin/activate ]] && python -m venv ./.ENV
+
+source ./.ENV/bin/activate
+# python -c "import dbus" &> /dev/null || pip install dbus-python 
+
+./main.py "$@"
+popd >/dev/null
